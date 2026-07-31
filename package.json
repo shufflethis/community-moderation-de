@@ -1,0 +1,17 @@
+{
+  "name": "community-moderation-de",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro check && astro build",
+    "preview": "astro preview",
+    "test": "node --test"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.4",
+    "astro": "^5.15.1",
+    "typescript": "^5.9.3"
+  }
+}
