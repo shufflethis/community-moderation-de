@@ -1,22 +1,1188 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-const schema = { '@context':'https://schema.org', '@type':'ProfessionalService', name:'famefact – Community Moderation', url:'https://community-moderation.de/', telephone:'+4930403665430', email:'info@famefact.com', areaServed:{'@type':'Country',name:'Deutschland'}, address:{'@type':'PostalAddress',addressLocality:'Berlin',addressCountry:'DE'}, parentOrganization:{'@type':'Organization',name:'famefact',url:'https://famefact.com/'}, serviceType:['Community Management','Social Media Moderation','Krisenkommunikation'] };
-const faq = { '@context':'https://schema.org', '@type':'FAQPage', mainEntity:[
-{'@type':'Question',name:'Was macht professionelle Community Moderation?',acceptedAnswer:{'@type':'Answer',text:'Professionelle Moderation beantwortet Anfragen, sortiert Feedback, deeskaliert Konflikte und leitet relevante Fälle nach klaren Regeln an die richtigen Teams weiter.'}},
-{'@type':'Question',name:'Kann famefact auch außerhalb der Bürozeiten moderieren?',acceptedAnswer:{'@type':'Answer',text:'Der passende Serviceumfang wird nach Kanal, Community-Volumen, Sprachen und Eskalationsbedarf individuell definiert.'}},
-{'@type':'Question',name:'Welche Kanäle moderiert ihr?',acceptedAnswer:{'@type':'Answer',text:'Wir entwickeln Moderationsprozesse für die relevanten Social-Media-Kanäle und Communities einer Marke – inklusive Eskalationswegen und Reporting.'}}]};
+import { SITE, EMAIL, PHONE, wa, WHATSAPP_NUMBER } from '../config';
+
+const faqItems = [
+  {
+    q: 'Was ist Community Moderation?',
+    a: 'Community Moderation ist die laufende Betreuung der Kommentare, Nachrichten und Beiträge, die eine Marke auf ihren eigenen Kanälen erhält. Moderatorinnen und Moderatoren beantworten Fragen, setzen die Netiquette durch, blenden rechtswidrige Inhalte aus, deeskalieren Konflikte und geben Fälle, die sie nicht selbst entscheiden dürfen, nach einem festgelegten Weg an das Unternehmen weiter. Sie ist damit der operative Teil des Community Managements.',
+  },
+  {
+    q: 'Was kostet Community Moderation?',
+    a: 'Der Preis entsteht aus sechs Faktoren: Anzahl der Kanäle, monatliches Nachrichtenvolumen, zugesagte Reaktionszeit, Abdeckungsfenster inklusive Abend und Wochenende, Sprachen sowie Freigabetiefe. Wir kalkulieren nach Aufwand und nicht nach Paket, weil ein Kanal mit 300 Kommentaren im Monat und ein Kanal mit 30.000 nichts miteinander zu tun haben. Im Erstgespräch nennen wir eine belastbare Spanne, bevor irgendjemand etwas unterschreibt.',
+  },
+  {
+    q: 'Wie schnell antwortet ihr auf Kommentare?',
+    a: 'Die Reaktionszeit ist eine Vereinbarung, kein Zufall. Üblich sind Fenster von zwei bis vier Stunden innerhalb der abgedeckten Zeiten, für kritische Fälle deutlich kürzer. Was ihr braucht, hängt vom Kanal ab: Eine TikTok-Kommentarspalte unter einem viralen Video verzeiht keine vier Stunden, ein LinkedIn-Post schon.',
+  },
+  {
+    q: 'Übernehmt ihr auch Abende, Wochenenden und Feiertage?',
+    a: 'Ja. Genau dort entsteht der Bedarf, denn Communities sind abends und am Wochenende am aktivsten, während interne Teams dann nicht da sind. Wir definieren das Abdeckungsfenster gemeinsam und halten es verbindlich fest, statt es als Bereitschaft zu behandeln, die im Zweifel niemand übernimmt.',
+  },
+  {
+    q: 'Was ist der Unterschied zwischen Community Moderation und Community Management?',
+    a: 'Community Management ist die Strategie: Wem sprechen wir, mit welcher Haltung, mit welchem Ziel, mit welchen Formaten. Community Moderation ist die Ausführung im Tagesgeschäft: Jede einzelne Antwort, jede Ausblendung, jede Eskalation. Viele Unternehmen haben eine Strategie und trotzdem keine Moderation, weil niemand die Zeit hat, sie täglich umzusetzen.',
+  },
+  {
+    q: 'Bekommen wir feste Ansprechpersonen oder wechselnde Kräfte?',
+    a: 'Ihr bekommt ein benanntes Kernteam mit einer verantwortlichen Person und mindestens einer eingearbeiteten Vertretung. Das ist der eigentliche Grund, warum Moderation ausgelagert funktioniert: Ein internes Team von einer Person fällt bei Urlaub und Krankheit komplett aus, ein Kernteam nicht.',
+  },
+  {
+    q: 'Wie stellt ihr sicher, dass ihr in unserer Tonalität schreibt?',
+    a: 'Über einen Moderationsleitfaden, den wir gemeinsam schreiben und der Beispielantworten enthält, nicht nur Adjektive. In den ersten zwei Wochen laufen alle Antworten über eine Freigabe, danach nur noch die Fälle, die ihr selbst freigeben wollt. So verschiebt sich die Verantwortung schrittweise und nicht auf einen Schlag.',
+  },
+  {
+    q: 'Dürft ihr Kommentare löschen oder ausblenden?',
+    a: 'Nur nach den Regeln, die ihr vorgebt. Wir schreiben mit euch eine Netiquette, die transparent macht, was auf euren Kanälen nicht geduldet wird, und wenden sie einheitlich an. Jede Ausblendung wird protokolliert, damit ihr im Zweifel belegen könnt, warum ein Beitrag entfernt wurde und warum ein anderer nicht.',
+  },
+  {
+    q: 'Wie geht ihr mit Hate Speech und rechtswidrigen Kommentaren um?',
+    a: 'Strafrechtlich relevante Inhalte werden ausgeblendet oder gemeldet, dokumentiert und je nach abgestimmter Schwelle an euch und gegebenenfalls an die Plattform weitergegeben. Wichtig ist die Dokumentation: Ohne Screenshot, Zeitstempel und Begründung ist ein Vorfall später nicht mehr belegbar.',
+  },
+  {
+    q: 'Funktioniert das auch für B2B-Marken?',
+    a: 'Ja, und dort oft mit größerem Effekt. In erklärungsbedürftigen Märkten liest die Kaufentscheiderin nicht nur den Beitrag, sondern auch, wie das Unternehmen unter dem Beitrag mit einer kritischen Nachfrage umgeht. Eine kompetente Antwort auf LinkedIn ist ein Vertriebsargument, eine unbeantwortete Frage ein Einwand.',
+  },
+  {
+    q: 'Welche Tools nutzt ihr?',
+    a: 'Wir arbeiten in dem System, das ihr habt, und richten eines ein, wenn ihr keines habt. Für kleine Volumen reichen die nativen Postfächer der Plattformen plus ein sauberes Schichtprotokoll, ab einem gewissen Volumen braucht es ein Ticketsystem mit Kategorien, Zuweisung und Historie. Der Aufwand für den Wechsel lohnt sich meist ab der zweiten Plattform.',
+  },
+  {
+    q: 'Funktioniert das auch parallel zu unserer bestehenden Agentur?',
+    a: 'Ja, das ist sogar der häufigere Fall. Content und Kampagnen bleiben dort, wo sie heute liegen, und wir übernehmen ausschließlich die Moderation. Wichtig ist dann eine saubere Schnittstelle: Wer informiert uns über einen anstehenden Kampagnenstart, und wohin melden wir auffällige Reaktionen zurück? Ohne diese beiden Wege moderiert man an der Kampagne vorbei.',
+  },
+  {
+    q: 'Was passiert, wenn wir die Moderation später wieder selbst machen wollen?',
+    a: 'Dann bekommt ihr ein funktionierendes System zurück und keinen Ordner mit Screenshots. Netiquette, Moderationsleitfaden, Antwortbibliothek, Eskalationsplan und die Ticket-Konfiguration gehören euch von Anfang an und werden übergeben. Wir begleiten die Einarbeitung eures Teams für einen vereinbarten Zeitraum. Verträge mit langen Kündigungsfristen halten wir für ein schlechtes Zeichen, wenn die Leistung stimmt.',
+  },
+  {
+    q: 'Wie schnell können wir starten?',
+    a: 'Realistisch in vierzehn Tagen ab Zusage. In der ersten Woche erfassen wir Kanäle, Volumen, wiederkehrende Fragen und Risiken, in der zweiten schreiben wir Leitfaden, Netiquette und Eskalationsweg und schalten die Zugänge frei. Ab Tag fünfzehn moderieren wir mit Freigabe, danach im vereinbarten Umfang.',
+  },
+];
+
+const canonical = SITE + '/';
+
+const orgSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'ProfessionalService',
+  '@id': canonical + '#service',
+  name: 'community moderation – ein Service von famefact',
+  url: canonical,
+  description: 'Ausgelagerte Community Moderation für Social-Media-Kanäle: Kommentare und Direktnachrichten moderieren, Netiquette durchsetzen, Konflikte deeskalieren, Eskalationen dokumentieren.',
+  email: EMAIL,
+  telephone: PHONE,
+  image: SITE + '/images/scenes/team-moderation-schicht.webp',
+  priceRange: '$$$',
+  areaServed: { '@type': 'Country', name: 'Deutschland' },
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: 'Schliemannstr. 23',
+    postalCode: '10437',
+    addressLocality: 'Berlin',
+    addressCountry: 'DE',
+  },
+  parentOrganization: { '@type': 'Organization', name: 'famefact – track by track GmbH', url: 'https://famefact.com/' },
+  serviceType: ['Community Moderation', 'Social Media Moderation', 'Kommentarmoderation', 'Krisenkommunikation'],
+  knowsAbout: ['Community Moderation', 'Digital Services Act', 'Hate Speech', 'Netiquette', 'Social Customer Care'],
+};
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqItems.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
 ---
-<BaseLayout title="Community Moderation Agentur | Social Media Moderation deutschlandweit" description="Community Moderation für Social Media: Anfragen beantworten, Konflikte deeskalieren, Marken schützen. Ein Service von famefact aus Berlin – deutschlandweit.">
-  <script is:inline type="application/ld+json" set:html={JSON.stringify(schema)}></script><script is:inline type="application/ld+json" set:html={JSON.stringify(faq)}></script>
-  <section class="hero"><div class="wrap hero-grid"><div><p class="eyebrow">famefact · Berlin & deutschlandweit</p><h1 class="display">Community Moderation, die Gespräche <em>weiterbringt.</em></h1><p class="lead">Deine Community verdient Antworten – nicht Warteschleifen. Wir moderieren Social Media mit Haltung, klaren Prozessen und einem Team, das deine Marke versteht.</p><div class="actions"><a class="button" href="#kontakt">Kostenlose Erstberatung</a><a class="phone" href="tel:+4930403665430">oder direkt: 030 403 665 430</a></div><p class="micro">Für Marken, Teams und Plattformen mit Anspruch an Service, Tonalität und Sicherheit.</p></div><aside class="hero-aside" aria-label="Unsere Moderationsprinzipien"><span>01</span><strong>zuhören</strong><span>02</span><strong>einordnen</strong><span>03</span><strong>handeln</strong><p>Vom Kommentar bis zur Eskalation: Jede Antwort hat einen Zweck.</p></aside></div></section>
-  <section class="proof"><div class="wrap"><p class="eyebrow">Erfahrung, auf die du aufbauen kannst</p><p>Seit 2009 entwickelt famefact Social-Media-Strategien, Inhalte, Communities und Kampagnen für Unternehmen und Marken.</p><div class="logos"><span>Vattenfall</span><span>Casio</span><span>REWE</span><span>Autohero</span><span>Fleurop</span><span>Oxford</span></div></div></section>
-  <section id="leistungen" class="services"><div class="wrap"><div class="section-head"><p class="eyebrow">Was dein Team entlastet</p><h2 class="display">Keine Copy-Paste-Antworten. Ein System, das zu deiner Marke passt.</h2></div><div class="service-list"><article><b>01 / Moderation</b><h3>Antworten, die Menschen ernst nehmen.</h3><p>Wir pflegen den Dialog in deiner Tonalität, beantworten wiederkehrende Fragen und halten Gespräche konstruktiv.</p><a href="/social-media-moderation/">Social Media Moderation ansehen →</a></article><article><b>02 / Community Management</b><h3>Aus Reichweite wird Beziehung.</h3><p>Wir erkennen Themen, bündeln Feedback und schaffen Routinen, die aus einer Audience eine belastbare Community machen.</p><a href="/community-management-agentur/">Community Management ansehen →</a></article><article><b>03 / Eskalation</b><h3>Ruhig bleiben, wenn es laut wird.</h3><p>Mit abgestimmten Leitlinien, Reaktionswegen und Reporting behalten Marke und Fachteam in kritischen Situationen die Kontrolle.</p><a href="/krisenkommunikation-social-media/">Krisenkommunikation ansehen →</a></article></div></div></section>
-  <section id="cases" class="cases"><div class="wrap"><div class="section-head"><p class="eyebrow">Aus dem famefact-Portfolio</p><h2 class="display">Social Media ist dort stark, wo Strategie und Dialog zusammenkommen.</h2></div><div class="case-grid"><a href="https://famefact.com/portfolio/marketingstrategie-autohaus-mercedes-berlin/" class="case"><img src="/images/mercedes-berlin.png" alt="Social Media für Mercedes-Benz Berlin – Case aus dem famefact-Portfolio"/><span>Case / Automotive</span><h3>Social Media für Mercedes-Benz Berlin</h3><p>Strategie, Inhalte und Austausch an den relevanten Touchpoints.</p></a><a href="https://famefact.com/portfolio/carado-geo-reddit-strategie/" class="case"><img src="/images/wewatch-social-recruiting.png" alt="Employer Branding für WeWatch Security – Case aus dem famefact-Portfolio"/><span>Case / Community & Recruiting</span><h3>Employer Branding für WeWatch Security</h3><p>Eine Marke im Dialog mit den Menschen, die sie erreichen will.</p></a></div><p class="case-link"><a href="https://famefact.com/social-media-marketing-beispiele/">Weitere Cases von famefact ansehen →</a></p></div></section>
-  <section id="ablauf" class="process"><div class="wrap process-grid"><div><p class="eyebrow">So starten wir</p><h2 class="display">Erst verstehen. Dann passend antworten.</h2></div><ol><li><strong>Community-Check</strong><span>Kanäle, Volumen, Themen, Tonalität und Risiken gemeinsam erfassen.</span></li><li><strong>Moderationssystem</strong><span>Leitfäden, Freigaben und Eskalationswege so bauen, dass sie im Alltag funktionieren.</span></li><li><strong>Dialog & Learnings</strong><span>Moderieren, dokumentieren und die wiederkehrenden Signale für dein Team sichtbar machen.</span></li></ol></div></section>
-  <section class="faq"><div class="wrap narrow"><p class="eyebrow">Häufige Fragen</p><h2 class="display">Klarheit vor dem Start.</h2><details><summary>Was umfasst Community Moderation?</summary><p>Wir definieren mit dir Tonalität, Themenfelder, Freigaben und Eskalationsprozesse. Danach moderieren wir im abgestimmten Umfang und machen relevante Entwicklungen nachvollziehbar.</p></details><details><summary>Ist das auch für B2B-Marken sinnvoll?</summary><p>Ja. Gerade bei erklärungsbedürftigen Angeboten wirkt ein kompetenter, schneller Dialog als sichtbarer Vertrauensbeweis.</p></details><details><summary>Wie schnell können wir beginnen?</summary><p>Nach einem Kennenlernen klären wir Kanäle, Umfang und Verantwortlichkeiten. Darauf basiert ein sauberer Startplan statt einer Standardlösung.</p></details></div></section>
-  <section class="team"><div class="wrap team-grid"><img src="/images/famefact-team.webp" alt="Das Team von famefact" loading="lazy"/><div><p class="eyebrow">Das Team hinter dem Dialog</p><h2 class="display">Erfahrung aus Berlin. Wirkung in ganz Deutschland.</h2><p>Wir verbinden klare Prozesse mit Menschen, die verstehen, wann eine Community eine schnelle Antwort, eine fachliche Rückfrage oder schlicht ein offenes Ohr braucht.</p><a href="https://famefact.com/ueber-uns/">famefact kennenlernen →</a></div></div></section>
-  <section id="kontakt" class="contact"><div class="wrap contact-grid"><div><p class="eyebrow">Unverbindlich starten</p><h2 class="display">Was soll deine Community künftig von dir hören?</h2><p>Erzähl uns kurz, wo Dialoge liegen bleiben oder welche Situation du besser absichern willst. Wir melden uns für ein erstes Gespräch.</p></div><div class="contact-card"><h3>Kostenlose Erstberatung</h3><p><a href="tel:+4930403665430">030 403 665 430</a></p><p><a href="mailto:info@famefact.com?subject=Anfrage%20Community%20Moderation">info@famefact.com</a></p><a class="button" href="https://famefact.com/kontakt/">Kontaktformular öffnen</a><small>Mit dem Klick öffnest du das Kontaktformular von famefact.</small></div></div></section>
+
+<BaseLayout
+  title="Community Moderation für Social Media | Agentur aus Berlin"
+  description="Community Moderation auslagern: Kommentare und DMs moderieren, Netiquette durchsetzen, Eskalationen dokumentieren. Von famefact aus Berlin, deutschlandweit. Selbst-Check in 2 Minuten."
+  canonical={canonical}
+  ctaText="Hallo famefact, wir brauchen Unterstützung bei der Community Moderation. Können wir kurz sprechen?"
+>
+  <script is:inline type="application/ld+json" set:html={JSON.stringify(orgSchema)}></script>
+  <script is:inline type="application/ld+json" set:html={JSON.stringify(faqSchema)}></script>
+
+  <!-- ============ 01 HERO ============ -->
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div class="hero-copy">
+        <p class="eyebrow">Community Moderation · Berlin &amp; deutschlandweit</p>
+        <h1>Community Moderation, die nicht <em>schläft.</em></h1>
+        <p class="lead">
+          Die aktivste Stunde eurer Community liegt zwischen 20 und 22 Uhr. Genau dann ist euer
+          Social-Media-Team im Feierabend. Wir übernehmen die Moderation eurer Kanäle – mit einem
+          Regelwerk, das ihr mitschreibt, und einem Team, das eure Marke spricht.
+        </p>
+        <div class="hero-actions">
+          <a class="btn btn-wa" href={wa('Hallo famefact, wir brauchen Unterstützung bei der Community Moderation. Können wir kurz sprechen?')} rel="noopener">Per WhatsApp fragen</a>
+          <a class="btn btn-ghost" href="#check">Selbst-Check starten <span aria-hidden="true">↓</span></a>
+        </div>
+        <p class="hero-micro">
+          Zwei Minuten, sechs Fragen, kein Formular. Das Ergebnis bekommt ihr sofort auf den Schirm.
+        </p>
+      </div>
+
+      <aside class="hero-thread" aria-label="Beispiel für einen moderierten Kommentarverlauf">
+        <div class="thread-head"><span class="dot"></span> Kommentarspalte · Dienstag, 21:47 Uhr</div>
+        <div class="thread">
+          <div class="bubble hot" style="--d:0s"><span class="who">Nutzer · 21:47</span>Dritte Woche keine Antwort auf meine Reklamation. Langsam wird das eine Frechheit.</div>
+          <div class="bubble mod" style="--d:.5s"><span class="who">Moderation · 21:51</span>Das kann ich absolut nachvollziehen – drei Wochen sind zu lang. Ich habe dir gerade eine Nachricht geschickt, damit wir den Vorgang direkt heraussuchen können.</div>
+          <div class="bubble" style="--d:1s"><span class="who">Nutzer · 21:58</span>Okay, ist angekommen. Danke, dass sich hier überhaupt mal jemand meldet.</div>
+          <div class="bubble mod" style="--d:1.5s"><span class="who">Intern · 22:02</span>Fall an Kundenservice übergeben, Ticket #4471, Nachfassen morgen 09:00.</div>
+        </div>
+      </aside>
+    </div>
+
+    <div class="wrap">
+      <div class="trustbar">
+        <div><b>seit 2009</b><span>im Social Web</span></div>
+        <div><b>20 Köpfe</b><span>Team in Berlin</span></div>
+        <div><b>7 Plattformen</b><span>inkl. Reddit &amp; Foren</span></div>
+        <div class="logos"><span>Vattenfall</span><span>CASIO</span><span>REWE</span><span>AutoHero</span><span>Fleurop</span><span>Oxford</span></div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="rule" />
+
+  <!-- ============ 02 PROBLEM ============ -->
+  <section id="problem">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><p class="eyebrow">01 — Das Problem</p></div>
+        <div>
+          <h2>Moderation ist kein Nebenjob für das Social-Media-Team.</h2>
+          <p class="lead" style="margin-top:22px">
+            In fast jedem Unternehmen, mit dem wir sprechen, ist Community Moderation formal
+            jemandem zugeordnet – und faktisch niemandem. Sie hängt an der Person, die gerade
+            Zeit hat, und bricht in dem Moment weg, in dem diese Person Urlaub nimmt.
+          </p>
+        </div>
+      </div>
+
+      <div class="prose two-col">
+        <p>
+          Das ist selten ein Motivationsproblem. Es ist ein Struktur­problem. Content-Produktion hat
+          einen Redaktionsplan, Kampagnen haben ein Budget und einen Zeitraum, Reporting hat einen
+          festen Termin im Monat. Moderation hat nichts davon. Sie passiert dann, wenn sie passiert,
+          und sie hört nicht auf, nur weil der Arbeitstag endet. Wer sie ohne festes Fenster, ohne
+          Vertretung und ohne Regelwerk betreibt, betreibt sie zwangsläufig unvollständig.
+        </p>
+        <p>
+          Dazu kommt die Sichtbarkeit. Eine unbeantwortete Frage unter einem Beitrag ist kein
+          internes Versäumnis, sondern öffentlich einsehbare Information über euer Unternehmen –
+          dauerhaft, für jeden, der später auf denselben Beitrag stößt. Ein einzelner unbeantworteter
+          Kommentar ist unkritisch. Fünfzehn unbeantwortete Kommentare in Folge sind eine Aussage.
+        </p>
+        <p>
+          Und es gibt eine Belastung, über die selten gesprochen wird: Wer täglich Beschwerden,
+          Beleidigungen und in manchen Branchen offene Anfeindungen liest, trägt daran. Wenn diese
+          Aufgabe nebenbei an einer einzelnen Person hängt, die dafür weder ausgebildet noch
+          entlastet wurde, ist die Fluktuation vorprogrammiert – und mit ihr geht jedes Mal das
+          gesamte ungeschriebene Wissen über eure Community verloren.
+        </p>
+        <p>
+          Der letzte Punkt ist der teuerste: Ohne dokumentierte Regeln entscheidet jede Person
+          anders. Der eine Kommentar wird gelöscht, der inhaltlich gleiche bleibt stehen. Genau
+          daraus entstehen die Diskussionen über angebliche Zensur, die dann deutlich mehr
+          Reichweite bekommen als der ursprüngliche Vorfall.
+        </p>
+      </div>
+
+      <div class="friction">
+        <article><b>20:00–23:00</b><p>Das aktivste Zeitfenster eurer Community fällt fast vollständig außerhalb der Zeit, in der jemand zuständig ist.</p></article>
+        <article><b>Eine Person</b><p>Urlaub, Krankheit oder Kündigung legen die Moderation komplett still, weil es keine eingearbeitete Vertretung gibt.</p></article>
+        <article><b>Kein Regelwerk</b><p>Ohne schriftliche Netiquette entscheidet jede Schicht anders – und jede Ungleichbehandlung wird irgendwann öffentlich diskutiert.</p></article>
+        <article><b>Keine Spur</b><p>Ausgeblendete Kommentare ohne Protokoll lassen sich später weder erklären noch belegen.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <hr class="rule" />
+
+  <!-- ============ 03 DEFINITION ============ -->
+  <section id="definition">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><p class="eyebrow">02 — Einordnung</p></div>
+        <div>
+          <h2>Was Community Moderation ist – und was sie nicht ist.</h2>
+        </div>
+      </div>
+
+      <div class="definition-card">
+        <p class="def">
+          <b>Community Moderation</b> ist die laufende Betreuung aller Kommentare, Direktnachrichten
+          und Nutzerbeiträge auf den eigenen Kanälen einer Marke. Sie umfasst das Beantworten von
+          Fragen, das Durchsetzen einer veröffentlichten Netiquette, das Ausblenden oder Melden
+          rechtswidriger Inhalte, die Deeskalation von Konflikten sowie die dokumentierte Weitergabe
+          von Fällen, die das Moderationsteam nicht selbst entscheiden darf.
+        </p>
+      </div>
+
+      <div class="prose two-col" style="margin-top:52px">
+        <p>
+          Der Begriff wird im deutschen Markt häufig synonym zu Community Management verwendet, und
+          das führt regelmäßig zu Angeboten, die aneinander vorbeigehen. Community Management ist
+          die strategische Ebene: Wen sprechen wir an, mit welcher Haltung, mit welchem Ziel, in
+          welchen Formaten, mit welchen Kennzahlen. Community Moderation ist die operative Ebene:
+          jede einzelne Antwort, jede Ausblendung, jede Eskalation, jeden Tag.
+        </p>
+        <p>
+          Beides braucht einander. Eine Strategie ohne tägliche Moderation bleibt eine Präsentation.
+          Moderation ohne Strategie erzeugt freundliche, aber beliebige Antworten, die niemanden
+          näher an eine Entscheidung bringen. Wir bauen deshalb immer zuerst das Regelwerk und
+          moderieren dann – nicht umgekehrt.
+        </p>
+        <p>
+          Abzugrenzen ist Moderation außerdem vom Social Customer Care. Der Übergang ist fließend,
+          aber die Verantwortung ist es nicht: Wir beantworten, was auf Basis eures Leitfadens
+          beantwortbar ist, und übergeben alles, was in ein Vorgangssystem gehört – Reklamationen
+          mit Vertragsbezug, Datenschutzanfragen, medizinische oder rechtliche Auskünfte. Diese
+          Grenze wird vorab schriftlich gezogen, sonst wird sie im Alltag jeden Tag neu verhandelt.
+        </p>
+        <p>
+          Und schließlich ist Moderation nicht Social Listening. Listening beobachtet, was über euch
+          gesprochen wird – auch dort, wo ihr nicht markiert werdet. Moderation handelt dort, wo ihr
+          Hausrecht habt. Wer nur zuhört, erfährt viel und verändert nichts.
+        </p>
+      </div>
+
+      <div class="compare" role="table" aria-label="Abgrenzung der Disziplinen">
+        <div class="crow chead" role="row"><span role="columnheader">Disziplin</span><span role="columnheader">Frage, die sie beantwortet</span><span role="columnheader">Typischer Takt</span></div>
+        <div class="crow" role="row"><span role="cell"><b>Community Moderation</b></span><span role="cell">Was antworten wir auf diesen konkreten Kommentar – jetzt?</span><span role="cell">stündlich</span></div>
+        <div class="crow" role="row"><span role="cell"><b>Community Management</b></span><span role="cell">Wie entwickeln wir diese Community über Monate?</span><span role="cell">monatlich</span></div>
+        <div class="crow" role="row"><span role="cell"><b>Social Customer Care</b></span><span role="cell">Wie lösen wir den Vorgang dieses Kunden zu Ende?</span><span role="cell">pro Fall</span></div>
+        <div class="crow" role="row"><span role="cell"><b>Social Listening</b></span><span role="cell">Wo und wie wird über uns gesprochen?</span><span role="cell">wöchentlich</span></div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="rule" />
+
+  <!-- ============ 04 LEISTUNGEN ============ -->
+  <section id="leistungen">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><p class="eyebrow">03 — Leistungen</p></div>
+        <div>
+          <h2>Sechs Bausteine. Ihr entscheidet, wie viele davon ihr braucht.</h2>
+          <p class="lead" style="margin-top:22px">
+            Kein Paket, das ihr ganz nehmen müsst. Die meisten Kunden starten mit den ersten drei
+            Bausteinen und holen die anderen dazu, sobald das Volumen es verlangt.
+          </p>
+        </div>
+      </div>
+
+      <div class="modules">
+        <article class="mod-card">
+          <b class="mod-no">01</b>
+          <h3>Kommentar- und DM-Moderation</h3>
+          <p>
+            Der Kern: Wir lesen und beantworten die Kommentare unter euren Beiträgen und Anzeigen
+            sowie die Direktnachrichten in euren Postfächern – in eurer Tonalität, innerhalb der
+            vereinbarten Reaktionszeit, im vereinbarten Zeitfenster. Wiederkehrende Fragen laufen
+            über eine gepflegte Antwortbibliothek, die wir gemeinsam aufbauen und die nach wenigen
+            Wochen den Großteil des Volumens abdeckt. Alles andere wird individuell beantwortet.
+          </p>
+          <p class="mod-out"><span>Ergebnis</span> Keine Frage bleibt unbeantwortet, und niemand in eurem Team muss abends nachsehen.</p>
+        </article>
+
+        <article class="mod-card">
+          <b class="mod-no">02</b>
+          <h3>Netiquette und Moderationsleitfaden</h3>
+          <p>
+            Bevor die erste Antwort geschrieben wird, entsteht das Regelwerk: eine veröffentlichte
+            Netiquette, die für alle sichtbar macht, was auf euren Kanälen nicht geduldet wird, und
+            ein interner Leitfaden mit echten Beispielantworten, Sprachregelungen für heikle Themen
+            und einer klaren Liste dessen, was wir <em>nicht</em> beantworten. Beides sind lebende
+            Dokumente, die wir nach jedem ungewöhnlichen Fall nachschärfen.
+          </p>
+          <p class="mod-out"><span>Ergebnis</span> Gleiche Fälle werden gleich behandelt – unabhängig davon, wer Schicht hat.</p>
+        </article>
+
+        <article class="mod-card">
+          <b class="mod-no">03</b>
+          <h3>Eskalation und Krisenfrüherkennung</h3>
+          <p>
+            Für die Fälle, die nicht in die Kommentarspalte gehören, gibt es einen Weg statt eines
+            Bauchgefühls: definierte Auslöser, benannte Empfänger, feste Kanäle, verbindliche
+            Fristen. Dazu kommt die Früherkennung – ein plötzlicher Anstieg negativer Kommentare
+            unter einem einzelnen Beitrag ist das zuverlässigste Frühsignal, das es gibt, und der
+            Unterschied zwischen einem Vorfall und einem Wochenende voller Telefonate liegt fast
+            immer in den ersten zwei Stunden.
+          </p>
+          <p class="mod-out"><span>Ergebnis</span> Ihr erfahrt von einem Problem, während es noch klein ist.</p>
+        </article>
+
+        <article class="mod-card">
+          <b class="mod-no">04</b>
+          <h3>Hate Speech, Recht und Dokumentation</h3>
+          <p>
+            Beleidigungen, Volksverhetzung, Bedrohungen und Desinformation brauchen eine andere
+            Behandlung als eine unfreundliche Kritik. Wir arbeiten mit abgestuften Schwellen: was
+            stehen bleibt, was ausgeblendet wird, was gemeldet wird, was zur Anzeige gebracht werden
+            kann. Jede Maßnahme wird mit Screenshot, Zeitstempel und Begründung protokolliert.
+          </p>
+          <p class="mod-out"><span>Ergebnis</span> Ihr könnt Monate später noch belegen, was warum entfernt wurde.</p>
+        </article>
+
+        <article class="mod-card">
+          <b class="mod-no">05</b>
+          <h3>Reporting, das eine Entscheidung auslöst</h3>
+          <p>
+            Ein Monatsbericht mit Volumen und Reaktionszeit ist die Pflicht. Interessanter ist die
+            Kür: Welche fünf Fragen wurden am häufigsten gestellt, und welche davon gehört
+            eigentlich in die FAQ eurer Website? An welchen Produkten hängt die meiste Kritik?
+            Welche Beiträge erzeugen regelmäßig Konflikte? Moderation ist die einzige Disziplin, die
+            täglich unmoderiertes Kundenfeedback im Originalton liest – dieses Wissen gehört zurück
+            ins Unternehmen.
+          </p>
+          <p class="mod-out"><span>Ergebnis</span> Aus Kommentaren werden Aufgaben für Produkt, Service und Marketing.</p>
+        </article>
+
+        <article class="mod-card">
+          <b class="mod-no">06</b>
+          <h3>Tool- und Ticket-Setup</h3>
+          <p>
+            Ab der zweiten Plattform reichen die nativen Postfächer nicht mehr. Wir richten ein
+            Ticketsystem ein oder arbeiten in eurem bestehenden weiter, definieren Kategorien,
+            Zuweisungslogik und Aufbewahrung und schulen euer Team darauf. Wenn ihr die Moderation
+            später wieder ins Haus holen wollt, übergeben wir ein funktionierendes System und keinen
+            Ordner mit Screenshots.
+          </p>
+          <p class="mod-out"><span>Ergebnis</span> Der Prozess bleibt bei euch, auch wenn wir irgendwann nicht mehr da sind.</p>
+        </article>
+      </div>
+
+      <figure class="figure wide">
+        <img src="/images/scenes/team-moderation-schicht.webp" width="1400" height="933" alt="Team von famefact bespricht die laufende Community Moderation an mehreren Bildschirmen" loading="lazy" decoding="async" />
+        <figcaption>Schichtübergabe: Was heute offen geblieben ist, steht morgen früh als Erstes im Protokoll.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <hr class="rule" />
+
+  <!-- ============ 05 KANÄLE ============ -->
+  <section id="kanaele">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><p class="eyebrow">04 — Kanäle</p></div>
+        <div>
+          <h2>Jede Plattform hat ihre eigene Art, laut zu werden.</h2>
+          <p class="lead" style="margin-top:22px">
+            Dieselbe Antwort funktioniert nicht überall. Deshalb bekommt jeder Kanal eigene Regeln,
+            eigene Reaktionszeiten und eine eigene Eskalationsschwelle.
+          </p>
+        </div>
+      </div>
+
+      <div class="channels">
+        <div class="ch"><b>Instagram</b><p>Das größte DM-Volumen und die meisten Kommentare unter bezahlten Beiträgen. Anzeigenkommentare werden systematisch unterschätzt: Sie erreichen kalte Zielgruppen und sind für sie oft der erste Kontakt mit eurer Marke.</p></div>
+        <div class="ch"><b>Facebook</b><p>Längere Diskussionen, ältere Zielgruppen, hitzigere Politik-Nebenschauplätze. Hier lohnt sich die veröffentlichte Netiquette am meisten, weil sie tatsächlich zitiert wird.</p></div>
+        <div class="ch"><b>TikTok</b><p>Höchstes Tempo, härtester Ton, kürzeste Halbwertszeit. Ein viraler Beitrag erzeugt in Stunden mehr Kommentare als ein anderer Kanal in einem Monat – ohne Volumenpuffer ist das nicht moderierbar.</p></div>
+        <div class="ch"><b>YouTube</b><p>Kommentare bleiben jahrelang sichtbar und werden gesucht. Moderation wirkt hier wie Archivpflege: Was heute unbeantwortet bleibt, liest jemand in zwei Jahren.</p></div>
+        <div class="ch"><b>LinkedIn</b><p>Fachlich, namentlich, geschäftskritisch. Hier antwortet nicht die Marke, sondern erkennbar ein Mensch – Standardfloskeln fallen sofort auf und schaden mehr als Schweigen.</p></div>
+        <div class="ch"><b>Reddit</b><p>Communitys mit eigenen Regeln und ausgeprägter Allergie gegen Marketing. Ohne Kenntnis der jeweiligen Subreddit-Regeln ist jeder Beitrag ein Risiko – dafür ist die Wirkung dort überdurchschnittlich.</p></div>
+        <div class="ch"><b>Foren &amp; Discord</b><p>Eigene Communitys mit Rollen, Rängen und Moderationsrechten. Hier moderiert man nicht nur Inhalte, sondern eine soziale Struktur – inklusive der Freiwilligen, die das bisher übernommen haben.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="rule" />
+
+  <!-- ============ 06 KI ============ -->
+  <section id="ki">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><p class="eyebrow">05 — Werkzeuge</p></div>
+        <div>
+          <h2>Wo KI in der Moderation hilft – und wo sie Schaden anrichtet.</h2>
+          <p class="lead" style="margin-top:22px">
+            Die Frage kommt inzwischen in jedem Erstgespräch. Unsere Antwort ist unbequem, aber sie
+            hat sich bewährt: KI ist im Sortieren hervorragend und im Antworten gefährlich.
+          </p>
+        </div>
+      </div>
+
+      <div class="prose two-col">
+        <p>
+          Der Teil der Moderation, der wirklich Zeit frisst, ist nicht das Schreiben. Es ist das
+          Sichten: fünfhundert Kommentare durchsehen, um die zwölf zu finden, die eine Antwort
+          brauchen, die drei, die kritisch sind, und den einen, der rechtlich relevant ist. Genau
+          hier ist maschinelle Unterstützung stark. Sprache erkennen, Spam und Duplikate
+          aussortieren, Stimmung einschätzen, Dringlichkeit vorschlagen, thematisch bündeln – das
+          funktioniert zuverlässig und spart bei großen Volumen einen erheblichen Teil des Aufwands.
+        </p>
+        <p>
+          Auch als Entwurfshilfe ist KI nützlich. Für eine wiederkehrende Frage nach Lieferzeiten
+          oder Öffnungszeiten einen Vorschlag zu erzeugen, den eine Moderatorin in zehn Sekunden
+          prüft und anpasst, ist schneller als jedes Textbaustein-Menü – und klingt weniger nach
+          Baustein, weil die Formulierung variiert.
+        </p>
+        <p>
+          Wovon wir abraten, ist das vollautomatische Beantworten. Nicht aus Prinzip, sondern aus
+          drei praktischen Gründen. Erstens: Sprachmodelle erfinden Details, wenn ihnen welche
+          fehlen – und in einer öffentlichen Kommentarspalte ist eine erfundene Zusage eine Zusage.
+          Zweitens: Sie erkennen Ironie, Anspielungen und branchenspezifische Reizthemen
+          unzuverlässig, also genau die Fälle, in denen eine falsche Antwort eskaliert statt
+          beruhigt. Drittens: Wenn eure Community merkt, dass ein Automat antwortet – und sie merkt
+          es –, wird aus einer Servicefrage eine Grundsatzdiskussion über eure Wertschätzung.
+        </p>
+        <p>
+          Dazu kommt die rechtliche Seite: Eine automatisiert erzeugte Antwort ist trotzdem eure
+          Aussage. Ihr haftet für sie wie für jede andere Äußerung eures Unternehmens, ohne dass
+          jemand sie vor der Veröffentlichung gelesen hat. In regulierten Branchen – Gesundheit,
+          Finanzen, Energie – ist das keine Effizienz, sondern ein offenes Risiko.
+        </p>
+      </div>
+
+      <div class="friction ki-grid">
+        <article class="ok"><b>Vorsortieren</b><p>Sprache, Spam, Dringlichkeit, Themencluster. Reduziert das Sichtungsvolumen deutlich, ohne dass jemand etwas Falsches sagt.</p></article>
+        <article class="ok"><b>Entwerfen</b><p>Antwortvorschläge für Standardfälle, die ein Mensch prüft, anpasst und freigibt – nicht veröffentlicht, sondern vorbereitet.</p></article>
+        <article class="ok"><b>Zusammenfassen</b><p>Monatliche Themenauswertung aus tausenden Kommentaren. Hier ist die Maschine dem Menschen klar überlegen.</p></article>
+        <article class="no"><b>Autonom antworten</b><p>Ohne menschliche Freigabe geht bei uns keine Antwort raus. Weder bei Beschwerden noch bei Fachfragen, und schon gar nicht in kritischen Lagen.</p></article>
+      </div>
+
+      <p class="disclaimer" style="margin-top:34px">
+        Praktischer Effekt: Die Zeit verschiebt sich vom Sichten zum Antworten. Bei gleichem Budget
+        bekommt ihr mehr echte Antworten statt schnellerer Automatismen – und das ist die Kennzahl,
+        die eure Community tatsächlich wahrnimmt.
+      </p>
+    </div>
+  </section>
+
+  <hr class="rule" />
+
+  <!-- ============ 07 SELBST-CHECK ============ -->
+  <section id="check" class="check-sec">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><p class="eyebrow">06 — Selbst-Check</p></div>
+        <div>
+          <h2>Braucht ihr externe Moderation? Sechs Fragen, zwei Minuten.</h2>
+          <p class="lead" style="margin-top:22px">
+            Läuft komplett in eurem Browser. Kein Formular, keine E-Mail-Adresse, keine
+            Speicherung. Am Ende könnt ihr das Ergebnis mit einem Klick per WhatsApp an uns
+            schicken – oder einfach behalten.
+          </p>
+        </div>
+      </div>
+
+      <div class="check card" id="cm-check" data-wa={WHATSAPP_NUMBER}>
+        <div class="check-progress"><div class="check-bar" id="cm-bar"></div></div>
+        <div id="cm-stage" class="check-stage">
+          <p class="check-step" id="cm-step">Frage 1 von 6</p>
+          <h3 id="cm-q">Auf wie vielen Social-Media-Kanälen seid ihr aktiv?</h3>
+          <div class="check-opts" id="cm-opts"></div>
+        </div>
+        <div id="cm-result" class="check-result" hidden></div>
+        <noscript><p class="muted" style="margin-top:18px">Der Selbst-Check braucht JavaScript. Schreib uns stattdessen einfach direkt – wir gehen die Fragen mit dir durch.</p></noscript>
+      </div>
+    </div>
+  </section>
+
+  <hr class="rule" />
+
+  <!-- ============ 08 ABLAUF ============ -->
+  <section id="ablauf">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><p class="eyebrow">07 — Ablauf</p></div>
+        <div>
+          <h2>In vierzehn Tagen von der Zusage zur ersten Schicht.</h2>
+        </div>
+      </div>
+
+      <ol class="steps">
+        <li>
+          <span class="st-no">Tag 1–3</span>
+          <h3>Bestandsaufnahme</h3>
+          <p>
+            Wir sehen uns an, was tatsächlich passiert: Volumen pro Kanal und Tageszeit, die
+            zwanzig häufigsten Fragen, die Beiträge mit den meisten Konflikten, die bisher
+            ungeschriebenen Regeln. Am Ende steht eine Zahl, mit der man planen kann, statt einer
+            Vermutung.
+          </p>
+        </li>
+        <li>
+          <span class="st-no">Tag 4–8</span>
+          <h3>Regelwerk</h3>
+          <p>
+            Netiquette, Moderationsleitfaden, Antwortbibliothek und Eskalationsweg entstehen als
+            Entwurf und gehen einmal durch eure Freigabe – idealerweise mit jemandem aus Recht oder
+            Kommunikation am Tisch. Hier wird auch festgelegt, was wir ausdrücklich nicht
+            beantworten.
+          </p>
+        </li>
+        <li>
+          <span class="st-no">Tag 9–14</span>
+          <h3>Zugänge und Probelauf</h3>
+          <p>
+            Rollen und Rechte werden sauber vergeben – eigene Zugänge statt geteilter Passwörter –,
+            das Ticketsystem wird eingerichtet, und wir moderieren die ersten Fälle im Vier-Augen-
+            Prinzip mit. Missverständnisse tauchen genau hier auf, und genau hier sind sie billig.
+          </p>
+        </li>
+        <li>
+          <span class="st-no">ab Tag 15</span>
+          <h3>Betrieb und Nachschärfen</h3>
+          <p>
+            Wir moderieren im vereinbarten Fenster. Alle vier Wochen gehen wir gemeinsam durch, was
+            aufgefallen ist, und passen Leitfaden und Schwellen an. Nach etwa drei Monaten ist der
+            Freigabeaufwand auf eurer Seite typischerweise auf ein Minimum gesunken.
+          </p>
+        </li>
+      </ol>
+
+      <div class="keep">
+        <h3>Was ihr auf keinen Fall auslagern solltet</h3>
+        <p>
+          Auslagern heißt nicht abgeben. Drei Dinge gehören zwingend bei euch, und wir bestehen
+          darauf, weil Projekte sonst nach einem halben Jahr in Reibung enden.
+        </p>
+        <p>
+          <strong>Die Entscheidungshoheit über heikle Themen.</strong> Wir formulieren, aber wir
+          entscheiden nicht, ob ihr euch zu einem politischen Ereignis äußert, ob ein Rückruf
+          kommuniziert wird oder ob ein Vorwurf eingeräumt wird. Diese Fälle laufen über eure
+          benannten Entscheider – deshalb steht in jedem Eskalationsweg ein Name und nicht eine
+          Abteilung.
+        </p>
+        <p>
+          <strong>Die Zugänge.</strong> Eure Kanäle bleiben in eurem Business Manager, in eurem
+          Besitz. Wir arbeiten mit eigenen, jederzeit entziehbaren Rollen darin. Agenturen, die
+          Zugänge auf sich anmelden, schaffen eine Abhängigkeit, die spätestens beim Wechsel teuer
+          wird.
+        </p>
+        <p>
+          <strong>Das Fachwissen.</strong> Wir lernen euer Produkt gut genug, um neunzig Prozent der
+          Fragen zu beantworten. Die restlichen zehn Prozent sind Spezialwissen, das im Unternehmen
+          bleibt – wir sorgen dafür, dass diese Fragen schnell und vollständig dort ankommen, statt
+          sie halbrichtig selbst zu beantworten. Das ist der Unterschied zwischen Entlastung und
+          einem zweiten Problem.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <hr class="rule" />
+
+  <!-- ============ 09 MENSCHEN ============ -->
+  <section id="menschen">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><p class="eyebrow">08 — Menschen</p></div>
+        <div>
+          <h2>Moderation ist Handarbeit. Also solltet ihr wissen, wessen Hände.</h2>
+          <p class="lead" style="margin-top:22px">
+            Hinter community-moderation.de steht famefact aus Berlin – ein zwanzigköpfiges
+            Social-Media-Team, das seit 2009 Communitys für Marken wie Vattenfall, CASIO, REWE und
+            AutoHero betreut. Ihr bekommt ein benanntes Kernteam mit fester Vertretung, keine
+            anonyme Warteschlange.
+          </p>
+        </div>
+      </div>
+
+      <div class="people">
+        <figure><img src="/images/people/lea.webp" width="480" height="480" alt="Lea, Community Management bei famefact" loading="lazy" decoding="async" /><figcaption><b>Lea</b><span>Community Management</span></figcaption></figure>
+        <figure><img src="/images/people/robert.webp" width="480" height="480" alt="Robert, Teamleader Social Media bei famefact" loading="lazy" decoding="async" /><figcaption><b>Robert</b><span>Teamleader Social Media</span></figcaption></figure>
+        <figure><img src="/images/people/annie.webp" width="480" height="480" alt="Annie, Head of Content bei famefact" loading="lazy" decoding="async" /><figcaption><b>Annie</b><span>Head of Content</span></figcaption></figure>
+        <figure><img src="/images/people/sascha.webp" width="480" height="480" alt="Sascha, Senior Strategy Manager bei famefact" loading="lazy" decoding="async" /><figcaption><b>Sascha</b><span>Senior Strategy Manager</span></figcaption></figure>
+      </div>
+
+      <div class="scenes">
+        <figure class="figure"><img src="/images/scenes/moderatoren-am-kanal.webp" width="1400" height="933" alt="Zwei Moderatorinnen und Moderatoren sichten gemeinsam einen Social-Media-Kanal am Laptop" loading="lazy" decoding="async" /><figcaption>Zwei Augenpaare auf einem strittigen Fall – bevor die Antwort rausgeht.</figcaption></figure>
+        <figure class="figure"><img src="/images/scenes/kommentar-am-smartphone.webp" width="1400" height="933" alt="Moderator prüft einen Kommentar am Smartphone neben dem geöffneten Laptop" loading="lazy" decoding="async" /><figcaption>Der Großteil eurer Community schreibt mobil. Wir lesen deshalb auch mobil gegen.</figcaption></figure>
+      </div>
+    </div>
+  </section>
+
+  <hr class="rule" />
+
+  <!-- ============ 10 RECHT ============ -->
+  <section id="recht" class="legal-sec">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><p class="eyebrow alert">09 — Recht &amp; Sicherheit</p></div>
+        <div>
+          <h2>Der Teil, den die meisten Angebote auslassen.</h2>
+          <p class="lead" style="margin-top:22px">
+            Wer Moderation auslagert, lagert Verantwortung nicht mit aus. Deshalb reden wir früh
+            darüber, wo eure Pflichten als Kanalbetreiber tatsächlich liegen – und wie ein Prozess
+            aussieht, der sie im Alltag erfüllt.
+          </p>
+        </div>
+      </div>
+
+      <div class="prose two-col">
+        <p>
+          Die rechtliche Lage hat sich zuletzt spürbar verschoben. Das Netzwerkdurchsetzungsgesetz,
+          jahrelang die deutsche Referenz für Löschpflichten, ist 2024 aufgehoben worden. An seine
+          Stelle ist der europäische Digital Services Act getreten, national flankiert vom
+          Digitale-Dienste-Gesetz. Der wichtigste praktische Unterschied: Der DSA richtet seine
+          harten Pflichten an die Plattformen – an Instagram, TikTok, YouTube –, nicht an die
+          Unternehmen, die dort eine Seite betreiben. Wer euch etwas anderes verkauft, verkauft euch
+          Angst.
+        </p>
+        <p>
+          Das heißt aber nicht, dass ihr aus der Verantwortung seid. Für eure eigene Präsenz gilt
+          weiterhin: Sobald ihr von einem rechtswidrigen Beitrag auf eurer Seite Kenntnis erlangt,
+          müsst ihr handeln. Das Risiko entsteht also nicht durch den Kommentar selbst, sondern
+          durch die Zeit zwischen Kenntnis und Reaktion – und genau diese Zeit ist das, was eine
+          verlässliche Moderation verkürzt.
+        </p>
+        <p>
+          Der zweite Bereich ist der Datenschutz. Für die Reichweitendaten eurer Fanpages seid ihr
+          gemeinsam mit der Plattform verantwortlich – das ist seit dem Fanpage-Urteil des
+          Europäischen Gerichtshofs geklärte Rechtslage. Praktisch relevant wird das dort, wo eure
+          Moderation personenbezogene Daten berührt: in Direktnachrichten, in denen Kundinnen
+          Vertragsnummern, Adressen oder Gesundheitsangaben schicken. Solche Inhalte gehören nicht
+          in einen geteilten Posteingang und schon gar nicht in einen Screenshot-Ordner, sondern in
+          ein System mit Zugriffsrechten und Löschfristen.
+        </p>
+        <p>
+          Der dritte Bereich ist euer eigenes Hausrecht. Ihr dürft auf euren Kanälen Regeln
+          aufstellen und durchsetzen – aber ihr müsst sie vorher veröffentlichen und dann
+          gleichmäßig anwenden. Willkürliches Löschen ist nicht nur kommunikativ riskant, es ist
+          angreifbar. Eine veröffentlichte Netiquette ist deshalb kein Deko-Text, sondern die
+          Grundlage, auf die sich eine Moderationsentscheidung berufen kann.
+        </p>
+      </div>
+
+      <div class="legal-grid">
+        <div class="lcard"><b>Kenntnis → Reaktion</b><p>Kurze, dokumentierte Wege von der Meldung bis zur Entscheidung. Das ist der Punkt, an dem Haftung tatsächlich entsteht.</p></div>
+        <div class="lcard"><b>Protokoll statt Erinnerung</b><p>Screenshot, Zeitstempel, angewandte Regel, handelnde Person – für jede Ausblendung und jede Sperre.</p></div>
+        <div class="lcard"><b>Rechte statt Passwörter</b><p>Eigene Zugänge über den Business Manager, klare Rollen, sofortiger Entzug beim Ausscheiden.</p></div>
+        <div class="lcard"><b>Daten mit Frist</b><p>Personenbezogene Inhalte aus DMs in einem System mit Zugriffsbeschränkung und definierter Löschfrist.</p></div>
+      </div>
+
+      <p class="disclaimer">
+        Hinweis: Diese Darstellung ist eine Einordnung aus der Praxis und ersetzt keine
+        Rechtsberatung. Für verbindliche Auskünfte zu eurem konkreten Fall zieht bitte eure
+        Rechtsabteilung oder eine Kanzlei hinzu – wir arbeiten in Projekten regelmäßig mit ihr
+        zusammen.
+      </p>
+    </div>
+  </section>
+
+  <hr class="rule" />
+
+  <!-- ============ 11 KOSTEN ============ -->
+  <section id="kosten">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><p class="eyebrow">10 — Kosten</p></div>
+        <div>
+          <h2>Was den Preis wirklich treibt.</h2>
+          <p class="lead" style="margin-top:22px">
+            Wir arbeiten mit monatlichen Retainern und rechnen nach Aufwand, nicht nach Paket. Diese
+            sechs Faktoren entscheiden über die Größenordnung – und ihr könnt an fast allen selbst
+            drehen.
+          </p>
+        </div>
+      </div>
+
+      <div class="drivers">
+        <div><b>Volumen</b><p>Nachrichten und Kommentare pro Monat. Der mit Abstand größte Hebel und die Zahl, die fast niemand vorher kennt.</p></div>
+        <div><b>Abdeckungsfenster</b><p>Werktags bis 18 Uhr ist eine andere Kalkulation als sieben Tage bis 22 Uhr. Wochenende ist der teuerste Einzelposten.</p></div>
+        <div><b>Reaktionszeit</b><p>Vier Stunden lassen sich in Schichten bündeln, dreißig Minuten erfordern durchgehende Besetzung.</p></div>
+        <div><b>Kanäle</b><p>Jede zusätzliche Plattform bringt eigene Regeln, eigene Werkzeuge und eigene Einarbeitung mit.</p></div>
+        <div><b>Freigabetiefe</b><p>Je mehr Antworten durch eure Freigabe müssen, desto mehr Abstimmungsaufwand entsteht auf beiden Seiten.</p></div>
+        <div><b>Sprachen</b><p>Mehrsprachige Communitys brauchen muttersprachliche Moderation, nicht übersetzte Textbausteine.</p></div>
+      </div>
+
+      <div class="cost-note card">
+        <h3>Warum hier keine Preistabelle steht</h3>
+        <p>
+          Weil eine ehrliche Zahl erst nach der Bestandsaufnahme entsteht. Ein Kanal mit 300
+          Kommentaren im Monat und ein Kanal mit 30.000 haben nichts gemeinsam außer dem Wort
+          Kanal. Was wir zusagen können: Ihr bekommt im Erstgespräch eine belastbare Spanne und
+          nach der Bestandsaufnahme ein Angebot, das die Annahmen offenlegt, aus denen die Zahl
+          entstanden ist – Volumen, Fenster, Reaktionszeit. Wenn sich eine dieser Annahmen ändert,
+          ändert sich der Preis nachvollziehbar mit, statt in einer Nachverhandlung zu enden.
+        </p>
+        <a class="btn btn-wa" href={wa('Hallo famefact, könnt ihr uns eine Größenordnung für die Community Moderation nennen? Unsere Kanäle: ')} rel="noopener">Größenordnung per WhatsApp anfragen</a>
+      </div>
+    </div>
+  </section>
+
+  <hr class="rule" />
+
+  <!-- ============ 12 REFERENZEN ============ -->
+  <section id="referenzen">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><p class="eyebrow">11 — Erfahrung</p></div>
+        <div>
+          <h2>Seit 2009 in Kommentarspalten, in denen es auch mal ungemütlich wird.</h2>
+        </div>
+      </div>
+      <div class="prose narrow">
+        <p>
+          famefact betreut Social Media für Unternehmen aus Energie, Handel, Automotive, Konsumgütern
+          und dem öffentlichen Bereich – darunter Vattenfall, CASIO, REWE, AutoHero, Fleurop und
+          Oxford. Das sind Branchen, in denen Kommentarspalten nicht nur aus Produktfragen bestehen,
+          sondern regelmäßig politisch, emotional oder beides werden. Genau daraus stammt der
+          Erfahrungsvorsprung, den wir in Regelwerke und Eskalationsschwellen übersetzen.
+        </p>
+        <p>
+          Was diese Projekte gemeinsam haben, ist nicht die Branche, sondern die Ausgangslage: ein
+          Team, das guten Content produziert, und eine Kommentarspalte, die niemand mehr in der
+          Breite bearbeiten kann. Der Wendepunkt ist selten spektakulär. Er besteht darin, dass
+          jemand verbindlich zuständig ist, dass es aufgeschriebene Regeln gibt, an die sich alle
+          halten, und dass abends um zehn tatsächlich jemand liest. Der Rest ist Konsequenz über
+          Monate – und genau deshalb ist Moderation eine Aufgabe für ein Team mit Vertretung und
+          nicht für eine gut gemeinte Zusatzaufgabe.
+        </p>
+      </div>
+      <div class="ref-logos">
+        <span>Vattenfall</span><span>CASIO</span><span>REWE</span><span>AutoHero</span><span>Fleurop</span><span>Oxford</span><span>ADAC</span><span>DRK Kliniken</span>
+      </div>
+      <p class="ref-link"><a href="https://famefact.com/social-media-marketing-beispiele/" rel="noopener">Cases und Projektbeispiele bei famefact ansehen →</a></p>
+    </div>
+  </section>
+
+  <hr class="rule" />
+
+  <!-- ============ 13 FAQ ============ -->
+  <section id="faq">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><p class="eyebrow">12 — Häufige Fragen</p></div>
+        <div><h2>Was Unternehmen vor dem Start wissen wollen.</h2></div>
+      </div>
+      <div class="faq narrow">
+        {faqItems.map((f) => (
+          <details>
+            <summary>{f.q}</summary>
+            <p>{f.a}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 14 CTA ============ -->
+  <section id="kontakt" class="cta-sec">
+    <div class="wrap cta-grid">
+      <div>
+        <p class="eyebrow">Loslegen</p>
+        <h2>Schickt uns einfach den Kanal, der euch am meisten Sorgen macht.</h2>
+        <p class="lead" style="margin-top:24px">
+          Kein Briefing-Dokument, kein Termin über drei Ecken. Ein Link genügt – wir sehen uns die
+          letzten Beiträge an und sagen euch ehrlich, ob externe Moderation für euch überhaupt Sinn
+          ergibt oder ob eine interne Regelung reicht.
+        </p>
+        <div class="hero-actions" style="margin-top:32px">
+          <a class="btn btn-wa" href={wa('Hallo famefact, hier ist der Kanal, der uns am meisten Sorgen macht: ')} rel="noopener">Kanal per WhatsApp schicken</a>
+          <a class="btn btn-ghost" href={`mailto:${EMAIL}?subject=Anfrage%20Community%20Moderation`}>Lieber per E-Mail</a>
+        </div>
+      </div>
+      <figure class="figure">
+        <img src="/images/scenes/beratung-gespraech.webp" width="1400" height="933" alt="Beratungsgespräch im famefact-Team über die Betreuung einer Community" loading="lazy" decoding="async" />
+      </figure>
+    </div>
+  </section>
 </BaseLayout>
+
 <style>
-.hero{padding:85px 0 72px;background:var(--paper)}.hero-grid{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(260px,.62fr);gap:80px;align-items:end}.hero h1{font-size:clamp(3.35rem,7vw,6.65rem);max-width:900px;margin:12px 0 26px}.hero h1 em{color:#31735d;font-style:normal}.lead{font-size:1.21rem;max-width:630px;color:#425047}.actions{display:flex;align-items:center;gap:22px;margin-top:33px}.phone{font-weight:700;text-decoration-thickness:1px;text-underline-offset:3px}.micro{font-size:.85rem;color:var(--muted);margin-top:29px}.hero-aside{border-top:2px solid var(--forest);padding-top:17px;display:grid;grid-template-columns:36px 1fr;gap:12px;color:var(--forest)}.hero-aside span{font-size:.8rem}.hero-aside strong{font-size:1.2rem}.hero-aside p{grid-column:1/-1;border-top:1px solid var(--mist);padding-top:17px;color:var(--muted)}.proof{padding:40px 0;background:var(--forest);color:white}.proof .wrap>p:nth-child(2){font:600 clamp(1.25rem,2vw,1.75rem)/1.25 'Source Serif 4',Georgia,serif;max-width:900px;margin:10px 0 34px}.proof .eyebrow{color:#b9db00}.logos{display:flex;flex-wrap:wrap;justify-content:space-between;gap:15px;color:#bccac0;font-weight:700;letter-spacing:.04em}.services,.cases,.process,.faq{padding:100px 0}.section-head{display:grid;grid-template-columns:.55fr 1.45fr;gap:40px;align-items:start}.section-head h2,.process h2,.faq h2,.contact h2{font-size:clamp(2.5rem,4.6vw,4.6rem);margin:0;max-width:860px}.service-list{margin-top:55px;border-top:1px solid #cbd4c9}.service-list article{display:grid;grid-template-columns:.45fr 1fr 1.05fr .75fr;gap:20px;align-items:start;padding:27px 0;border-bottom:1px solid #cbd4c9}.service-list b,.case span{font-size:.77rem;letter-spacing:.08em;text-transform:uppercase;color:#587266}.service-list h3{font:600 1.5rem/1.15 'Source Serif 4',serif;margin:0}.service-list p{margin:0;color:var(--muted)}.service-list a,.case-link a{font-weight:700;text-underline-offset:4px}.cases{background:#e3e9dc}.case-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:55px}.case{display:block;background:var(--paper);text-decoration:none;padding:14px 14px 25px;transition:.2s}.case:hover{transform:translateY(-4px)}.case img{display:block;width:100%;aspect-ratio:1.45;object-fit:cover;filter:saturate(.75)}.case span{display:block;margin:19px 8px 5px}.case h3,.case p{margin:0 8px}.case h3{font:600 1.62rem/1.1 'Source Serif 4',serif}.case p{color:var(--muted);margin-top:8px}.case-link{margin-top:28px}.process{background:var(--orange);color:#1c241d}.process-grid{display:grid;grid-template-columns:1fr 1.1fr;gap:80px}.process .eyebrow{color:#513323}.process ol{list-style:none;margin:0;padding:0}.process li{display:grid;grid-template-columns:1fr 1.3fr;padding:18px 0;border-top:1px solid rgba(0,0,0,.3);gap:20px}.process li span{color:#3e342b}.narrow{max-width:850px}.faq details{border-top:1px solid #cbd4c9;padding:19px 0}.faq details:last-child{border-bottom:1px solid #cbd4c9}.faq summary{cursor:pointer;font-weight:700;font-size:1.08rem}.faq details p{color:var(--muted);max-width:700px}.team{padding:85px 0;background:var(--paper)}.team-grid{display:grid;grid-template-columns:1.12fr .88fr;gap:65px;align-items:center}.team img{width:100%;display:block}.team h2{font-size:clamp(2.4rem,4.4vw,4.4rem);margin:8px 0 19px}.team p:not(.eyebrow){color:var(--muted);font-size:1.08rem}.team a{font-weight:700;text-underline-offset:4px}.contact{padding:85px 0 0}.contact-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:80px;align-items:center}.contact-card{background:var(--forest);padding:34px;color:#fff}.contact-card h3{font:600 1.65rem 'Source Serif 4',serif;margin:0}.contact-card p a{font-size:1.1rem;font-weight:700}.contact-card small{display:block;margin-top:15px;color:#bcd0c2}@media(max-width:760px){.hero{padding:58px 0}.hero-grid,.section-head,.process-grid,.team-grid,.contact-grid{grid-template-columns:1fr;gap:34px}.hero h1{font-size:3.4rem}.actions{align-items:flex-start;flex-direction:column;gap:14px}.service-list article{grid-template-columns:1fr;gap:12px}.case-grid{grid-template-columns:1fr}.services,.cases,.process,.faq{padding:70px 0}.logos{justify-content:flex-start;gap:18px 28px}.process li{grid-template-columns:1fr}.contact{padding-top:65px}}
+  /* ---------- Hero ---------- */
+  .hero { padding: clamp(56px, 7vw, 96px) 0 0; position: relative; }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -220px; left: 50%;
+    width: min(1100px, 100vw); height: 620px;
+    transform: translateX(-50%);
+    background: radial-gradient(ellipse at center, rgba(110, 91, 255, 0.22), transparent 62%);
+    pointer-events: none;
+  }
+  .hero-grid { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(320px, 0.85fr); gap: clamp(40px, 6vw, 90px); align-items: center; }
+  .hero h1 em { font-style: normal; color: var(--accent-soft); }
+  .hero .lead { margin-top: 28px; max-width: 58ch; }
+  .hero-actions { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 36px; }
+  .hero-micro { margin-top: 20px; font-size: 0.88rem; color: var(--muted); }
+
+  .hero-thread { background: var(--surface); border: 1px solid var(--line); border-radius: 22px; padding: 20px; }
+  .thread-head { display: flex; align-items: center; gap: 9px; font-size: 0.74rem; letter-spacing: 0.09em; text-transform: uppercase; color: var(--muted); padding: 0 4px 16px; border-bottom: 1px solid var(--line); margin-bottom: 18px; }
+  .thread-head .dot { width: 8px; height: 8px; border-radius: 50%; background: #29d17c; box-shadow: 0 0 0 4px rgba(41, 209, 124, 0.16); }
+  .hero-thread .bubble { animation: pop 0.55s var(--d, 0s) both ease-out; }
+  @keyframes pop { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+
+  .trustbar { display: flex; flex-wrap: wrap; align-items: center; gap: 26px 46px; margin-top: clamp(48px, 6vw, 84px); padding: 26px 0 0; border-top: 1px solid var(--line); }
+  .trustbar > div:not(.logos) { display: flex; flex-direction: column; }
+  .trustbar b { font-family: var(--display); font-size: 1.32rem; letter-spacing: -0.03em; }
+  .trustbar span { font-size: 0.82rem; color: var(--muted); }
+  .trustbar .logos { display: flex; flex-wrap: wrap; gap: 10px 22px; margin-left: auto; font-size: 0.85rem; font-weight: 600; letter-spacing: 0.04em; color: #6b6d80; }
+
+  /* ---------- Section-Kopf ---------- */
+  .sec-head { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 30px; align-items: start; margin-bottom: 56px; }
+  .sec-head .eyebrow { margin: 8px 0 0; }
+
+  .prose { color: var(--muted); font-size: 1.03rem; }
+  .prose.two-col { columns: 2; column-gap: 56px; }
+  .prose.two-col p { break-inside: avoid; }
+  .prose em { color: var(--ink); font-style: normal; font-weight: 600; }
+
+  /* ---------- Reibungspunkte ---------- */
+  .friction { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; margin-top: 54px; }
+  .friction article { border-top: 2px solid var(--signal); padding-top: 18px; }
+  .friction b { display: block; font-family: var(--display); font-size: 1.35rem; letter-spacing: -0.03em; margin-bottom: 10px; }
+  .friction p { font-size: 0.93rem; color: var(--muted); }
+
+  .ki-grid { margin-top: 52px; }
+  .ki-grid article.ok { border-top-color: var(--accent); }
+  .ki-grid article.no { border-top-color: var(--signal); }
+  .ki-grid article.no b { color: var(--signal); }
+
+  /* ---------- Was intern bleibt ---------- */
+  .keep { margin-top: 48px; border: 1px solid var(--line); border-radius: var(--r); background: var(--surface); padding: clamp(26px, 3.4vw, 40px); max-width: 900px; }
+  .keep h3 { margin-bottom: 16px; }
+  .keep p { color: var(--muted); font-size: 0.99rem; }
+  .keep strong { color: var(--ink); }
+
+  /* ---------- Definition ---------- */
+  .definition-card { border-left: 3px solid var(--accent); background: linear-gradient(90deg, var(--accent-dim), transparent 70%); padding: 28px 30px; border-radius: 0 var(--r) var(--r) 0; }
+  .definition-card .def { font-size: clamp(1.05rem, 1.55vw, 1.3rem); line-height: 1.55; margin: 0; }
+  .definition-card b { color: var(--accent-soft); }
+
+  .compare { margin-top: 52px; border-top: 1px solid var(--line); }
+  .crow { display: grid; grid-template-columns: 1.1fr 2fr 0.6fr; gap: 20px; padding: 18px 4px; border-bottom: 1px solid var(--line); font-size: 0.96rem; color: var(--muted); }
+  .crow.chead { font-size: 0.72rem; letter-spacing: 0.13em; text-transform: uppercase; color: #6b6d80; }
+  .crow b { color: var(--ink); }
+  .crow span:last-child { text-align: right; font-variant-numeric: tabular-nums; }
+
+  /* ---------- Module ---------- */
+  .modules { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+  .mod-card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 30px; position: relative; transition: border-color 0.2s, transform 0.2s; }
+  .mod-card:hover { border-color: var(--accent); transform: translateY(-3px); }
+  .mod-no { position: absolute; top: 26px; right: 28px; font-family: var(--display); font-size: 2.1rem; color: var(--line); letter-spacing: -0.04em; }
+  .mod-card h3 { margin: 0 0 14px; padding-right: 60px; }
+  .mod-card p { font-size: 0.97rem; color: var(--muted); }
+  .mod-out { margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--line); font-size: 0.9rem !important; color: var(--ink) !important; }
+  .mod-out span { display: inline-block; font-size: 0.68rem; letter-spacing: 0.13em; text-transform: uppercase; color: var(--accent-soft); margin-right: 9px; }
+
+  .figure { margin: 0; }
+  .figure img { border-radius: var(--r); border: 1px solid var(--line); width: 100%; }
+  .figure figcaption { margin-top: 12px; font-size: 0.87rem; color: var(--muted); }
+  .figure.wide { margin-top: 44px; }
+
+  /* ---------- Kanäle ---------- */
+  .channels { border-top: 1px solid var(--line); }
+  .ch { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 30px; padding: 24px 4px; border-bottom: 1px solid var(--line); align-items: baseline; }
+  .ch b { font-family: var(--display); font-size: 1.42rem; letter-spacing: -0.03em; }
+  .ch p { font-size: 0.99rem; color: var(--muted); }
+
+  /* ---------- Check ---------- */
+  .check-sec { background: linear-gradient(180deg, transparent, rgba(110, 91, 255, 0.05), transparent); }
+  .check { padding: 0; overflow: hidden; }
+  .check-progress { height: 3px; background: var(--line); }
+  .check-bar { height: 100%; width: 0; background: var(--accent); transition: width 0.35s ease; }
+  .check-stage, .check-result { padding: clamp(26px, 4vw, 46px); }
+  .check-step { font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent-soft); margin: 0 0 14px; }
+  .check h3 { margin-bottom: 26px; max-width: 24ch; }
+  /* Alles unterhalb entsteht zur Laufzeit per JS und trägt deshalb kein
+     Astro-Scope-Attribut — die Regeln müssen global sein, sonst greifen sie nicht. */
+  .check-opts { display: grid; gap: 11px; max-width: 640px; }
+  :global(.check-opt) { display: flex; align-items: center; gap: 14px; width: 100%; text-align: left; background: var(--surface-2); border: 1px solid var(--line); color: var(--ink); border-radius: 12px; padding: 15px 18px; font: 500 1rem/1.35 var(--sans); cursor: pointer; transition: border-color 0.15s, background 0.15s, transform 0.15s; }
+  :global(.check-opt:hover) { border-color: var(--accent); background: #1d1f2b; transform: translateX(3px); }
+  :global(.check-opt i) { flex: none; width: 22px; height: 22px; border-radius: 50%; border: 1px solid var(--line); font: 600 0.7rem/21px var(--sans); font-style: normal; text-align: center; color: var(--muted); }
+  :global(.check-back) { margin-top: 20px; background: none; border: 0; color: var(--muted); font: 500 0.88rem var(--sans); cursor: pointer; padding: 4px 0; }
+  :global(.check-back:hover) { color: var(--ink); }
+  :global(.res-score) { font-family: var(--display); font-weight: 700; font-size: clamp(2.1rem, 4.4vw, 3.2rem); letter-spacing: -0.04em; line-height: 1.03; margin: 0 0 18px; color: var(--ink); max-width: 20ch; }
+  :global(.res-label) { font-size: 0.74rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent-soft); margin: 0 0 16px; font-weight: 600; }
+  :global(.res-body) { color: var(--muted); max-width: 62ch; margin: 0 0 24px; }
+  :global(.res-list) { list-style: none; padding: 0; margin: 0 0 30px; display: grid; gap: 10px; max-width: 62ch; }
+  :global(.res-list li) { display: flex; gap: 12px; font-size: 0.95rem; color: var(--muted); }
+  :global(.res-list li)::before { content: '→'; color: var(--accent-soft); flex: none; }
+  :global(.res-actions) { display: flex; flex-wrap: wrap; gap: 13px; align-items: center; }
+
+  /* ---------- Ablauf ---------- */
+  .steps { list-style: none; margin: 0; padding: 0; counter-reset: s; display: grid; gap: 0; border-top: 1px solid var(--line); }
+  .steps li { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 30px; padding: 30px 4px; border-bottom: 1px solid var(--line); }
+  .st-no { font-size: 0.76rem; letter-spacing: 0.13em; text-transform: uppercase; color: var(--accent-soft); padding-top: 6px; }
+  .steps h3 { margin-bottom: 12px; }
+  .steps p { font-size: 0.99rem; color: var(--muted); max-width: 68ch; }
+
+  /* ---------- Menschen ---------- */
+  .people { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+  .people figure { margin: 0; }
+  .people img { border-radius: 14px; border: 1px solid var(--line); filter: grayscale(1) contrast(1.05); transition: filter 0.3s; width: 100%; }
+  .people figure:hover img { filter: none; }
+  .people figcaption { margin-top: 13px; }
+  .people b { display: block; font-family: var(--display); font-size: 1.16rem; letter-spacing: -0.02em; }
+  .people span { font-size: 0.85rem; color: var(--muted); }
+  .scenes { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin-top: 44px; }
+
+  /* ---------- Recht ---------- */
+  .legal-sec { background: linear-gradient(180deg, transparent, rgba(255, 77, 109, 0.045), transparent); }
+  .legal-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; margin-top: 52px; }
+  .lcard { border: 1px solid var(--line); border-radius: var(--r); padding: 24px; background: var(--surface); }
+  .lcard b { display: block; font-family: var(--display); font-size: 1.14rem; letter-spacing: -0.02em; margin-bottom: 10px; color: var(--signal); }
+  .lcard p { font-size: 0.92rem; color: var(--muted); }
+  .disclaimer { margin-top: 34px; font-size: 0.87rem; color: #75778a; max-width: 78ch; border-left: 2px solid var(--line); padding-left: 18px; }
+
+  /* ---------- Kosten ---------- */
+  .drivers { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px 34px; }
+  .drivers > div { border-top: 1px solid var(--line); padding-top: 18px; }
+  .drivers b { display: block; font-family: var(--display); font-size: 1.24rem; letter-spacing: -0.03em; margin-bottom: 9px; }
+  .drivers p { font-size: 0.93rem; color: var(--muted); }
+  .cost-note { margin-top: 46px; max-width: 800px; }
+  .cost-note h3 { margin-bottom: 14px; }
+  .cost-note p { color: var(--muted); margin-bottom: 24px; }
+
+  /* ---------- Referenzen ---------- */
+  .ref-logos { display: flex; flex-wrap: wrap; gap: 14px 34px; margin-top: 40px; padding-top: 28px; border-top: 1px solid var(--line); font-weight: 600; letter-spacing: 0.04em; color: #6b6d80; }
+  .ref-link { margin-top: 26px; }
+  .ref-link a { color: var(--accent-soft); text-decoration: none; font-weight: 600; }
+  .ref-link a:hover { text-decoration: underline; }
+
+  /* ---------- FAQ ---------- */
+  .faq details { border-bottom: 1px solid var(--line); padding: 20px 0; }
+  .faq details:first-child { border-top: 1px solid var(--line); }
+  .faq summary { cursor: pointer; font-weight: 600; font-size: 1.06rem; list-style: none; display: flex; justify-content: space-between; gap: 20px; }
+  .faq summary::-webkit-details-marker { display: none; }
+  .faq summary::after { content: '+'; color: var(--accent-soft); font-size: 1.4rem; line-height: 1; flex: none; }
+  .faq details[open] summary::after { content: '–'; }
+  .faq details p { margin-top: 14px; color: var(--muted); max-width: 74ch; }
+
+  /* ---------- CTA ---------- */
+  .cta-sec { border-top: 1px solid var(--line); }
+  .cta-grid { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(280px, 0.85fr); gap: clamp(36px, 5vw, 70px); align-items: center; }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 1040px) {
+    .modules, .legal-grid, .friction, .people { grid-template-columns: repeat(2, 1fr); }
+    .drivers { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 900px) {
+    .hero-grid, .cta-grid { grid-template-columns: 1fr; }
+    .sec-head, .ch, .steps li { grid-template-columns: 1fr; gap: 14px; }
+    .prose.two-col { columns: 1; }
+    .trustbar .logos { margin-left: 0; }
+    .scenes { grid-template-columns: 1fr; }
+    .crow { grid-template-columns: 1fr; gap: 6px; }
+    .crow span:last-child { text-align: left; }
+    .crow.chead { display: none; }
+  }
+  @media (max-width: 640px) {
+    .modules, .legal-grid, .friction, .drivers { grid-template-columns: 1fr; }
+    .people { grid-template-columns: repeat(2, 1fr); }
+    .mod-no { font-size: 1.6rem; top: 22px; right: 22px; }
+    .mod-card h3 { padding-right: 44px; }
+  }
 </style>
+
+<script is:inline>
+  (function () {
+    var root = document.getElementById('cm-check');
+    if (!root) return;
+    var waNum = root.getAttribute('data-wa');
+
+    var QUESTIONS = [
+      {
+        q: 'Auf wie vielen Social-Media-Kanälen seid ihr aktiv?',
+        opts: [
+          { t: 'Ein Kanal', s: 0 },
+          { t: 'Zwei bis drei Kanäle', s: 2 },
+          { t: 'Vier bis sechs Kanäle', s: 4 },
+          { t: 'Mehr als sechs, inklusive Foren oder Discord', s: 6 },
+        ],
+      },
+      {
+        q: 'Wie viele Kommentare und Nachrichten kommen im Monat zusammen?',
+        opts: [
+          { t: 'Unter 200 – überschaubar', s: 0 },
+          { t: '200 bis 1.000', s: 2 },
+          { t: '1.000 bis 5.000', s: 4 },
+          { t: 'Über 5.000 oder wir wissen es nicht genau', s: 6 },
+        ],
+      },
+      {
+        q: 'Wer moderiert heute, wenn die zuständige Person im Urlaub ist?',
+        opts: [
+          { t: 'Es gibt eine eingearbeitete Vertretung', s: 0 },
+          { t: 'Jemand springt ein, ohne wirklich eingearbeitet zu sein', s: 4 },
+          { t: 'Dann bleibt es liegen', s: 6 },
+        ],
+      },
+      {
+        q: 'Wie sieht es abends, am Wochenende und an Feiertagen aus?',
+        opts: [
+          { t: 'Ist abgedeckt und geregelt', s: 0 },
+          { t: 'Jemand schaut privat mal rein', s: 4 },
+          { t: 'Gar nicht abgedeckt', s: 6 },
+        ],
+      },
+      {
+        q: 'Gibt es eine schriftliche Netiquette und einen Eskalationsweg?',
+        opts: [
+          { t: 'Beides existiert und ist aktuell', s: 0 },
+          { t: 'Eins von beiden, eher informell', s: 3 },
+          { t: 'Weder noch – wir entscheiden im Einzelfall', s: 6 },
+        ],
+      },
+      {
+        q: 'Wie häufig wird es auf euren Kanälen ernsthaft unangenehm?',
+        opts: [
+          { t: 'Selten, meist sachliche Fragen', s: 0 },
+          { t: 'Regelmäßig Beschwerden, gelegentlich Beleidigungen', s: 3 },
+          { t: 'Häufig Hate Speech oder koordinierte Angriffe', s: 6 },
+        ],
+      },
+    ];
+
+    var PROFILES = [
+      {
+        max: 10,
+        label: 'Profil A',
+        title: 'Ihr habt es im Griff.',
+        body: 'Euer Volumen und eure Struktur passen zusammen. Externe Moderation würde euch aktuell mehr Abstimmung kosten, als sie euch abnimmt. Sinnvoll wäre höchstens ein Blick von außen auf Netiquette und Eskalationsweg, damit beides auch dann trägt, wenn das Volumen wächst.',
+        list: [
+          'Netiquette einmal jährlich gegenlesen lassen',
+          'Vertretungsregel schriftlich festhalten',
+          'Volumen pro Kanal monatlich mitschreiben, um den Kipppunkt zu erkennen',
+        ],
+      },
+      {
+        max: 20,
+        label: 'Profil B',
+        title: 'Es funktioniert – solange nichts passiert.',
+        body: 'Ihr schafft das Tagesgeschäft, aber euer Setup hat keine Reserve. Urlaub, ein viraler Beitrag oder eine unglückliche Kampagne reichen aus, um die Moderation für ein paar Tage kippen zu lassen. Eine Teilabdeckung – etwa Abende und Wochenenden – bringt hier das beste Verhältnis aus Aufwand und Wirkung.',
+        list: [
+          'Abdeckung für Abende und Wochenenden extern ergänzen',
+          'Antwortbibliothek für die 20 häufigsten Fragen aufbauen',
+          'Eskalationsweg mit benannten Empfängern und Fristen festschreiben',
+        ],
+      },
+      {
+        max: 999,
+        label: 'Profil C',
+        title: 'Hier fehlt eine Struktur, nicht eine Person.',
+        body: 'Volumen, fehlende Vertretung und fehlendes Regelwerk kommen bei euch zusammen. Das ist der Punkt, an dem interne Lösungen fast immer scheitern – nicht an Motivation, sondern an Kapazität und an fehlender Dokumentation. Sinnvoll ist eine vollständige Übernahme der Moderation inklusive Regelwerk, Protokollierung und festem Kernteam.',
+        list: [
+          'Bestandsaufnahme mit echten Volumenzahlen pro Kanal und Tageszeit',
+          'Netiquette veröffentlichen und Moderationsleitfaden schreiben',
+          'Protokollierung für jede Ausblendung einführen',
+          'Festes Kernteam mit Vertretung und verbindlichem Abdeckungsfenster',
+        ],
+      },
+    ];
+
+    var idx = 0;
+    var answers = [];
+    var elStep = document.getElementById('cm-step');
+    var elQ = document.getElementById('cm-q');
+    var elOpts = document.getElementById('cm-opts');
+    var elBar = document.getElementById('cm-bar');
+    var elStage = document.getElementById('cm-stage');
+    var elResult = document.getElementById('cm-result');
+
+    function render() {
+      var q = QUESTIONS[idx];
+      elStep.textContent = 'Frage ' + (idx + 1) + ' von ' + QUESTIONS.length;
+      elQ.textContent = q.q;
+      elBar.style.width = (idx / QUESTIONS.length) * 100 + '%';
+      elOpts.textContent = '';
+      q.opts.forEach(function (o, i) {
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'check-opt';
+        var mark = document.createElement('i');
+        mark.textContent = String.fromCharCode(65 + i);
+        b.appendChild(mark);
+        b.appendChild(document.createTextNode(o.t));
+        b.addEventListener('click', function () {
+          answers[idx] = o;
+          idx++;
+          if (idx >= QUESTIONS.length) finish();
+          else render();
+        });
+        elOpts.appendChild(b);
+      });
+      if (idx > 0) {
+        var back = document.createElement('button');
+        back.type = 'button';
+        back.className = 'check-back';
+        back.textContent = '← eine Frage zurück';
+        back.addEventListener('click', function () { idx--; render(); });
+        elOpts.appendChild(back);
+      }
+    }
+
+    function finish() {
+      var score = answers.reduce(function (a, o) { return a + o.s; }, 0);
+      var p = PROFILES.filter(function (x) { return score <= x.max; })[0];
+      elBar.style.width = '100%';
+      elStage.hidden = true;
+      elResult.hidden = false;
+
+      var msg =
+        'Hallo famefact, wir haben den Selbst-Check auf community-moderation.de gemacht.\n\n' +
+        'Ergebnis: ' + p.label + ' – ' + p.title + ' (' + score + ' von 36 Punkten)\n\n' +
+        'Unsere Antworten:\n' +
+        QUESTIONS.map(function (q, i) { return '• ' + q.q + '\n  ' + answers[i].t; }).join('\n') +
+        '\n\nKönnen wir dazu kurz sprechen?';
+
+      elResult.textContent = '';
+
+      var lbl = document.createElement('p');
+      lbl.className = 'res-label';
+      lbl.textContent = p.label + ' · ' + score + ' von 36 Punkten';
+      elResult.appendChild(lbl);
+
+      var h = document.createElement('p');
+      h.className = 'res-score display';
+      h.textContent = p.title;
+      elResult.appendChild(h);
+
+      var body = document.createElement('p');
+      body.className = 'res-body';
+      body.textContent = p.body;
+      elResult.appendChild(body);
+
+      var ul = document.createElement('ul');
+      ul.className = 'res-list';
+      p.list.forEach(function (t) {
+        var li = document.createElement('li');
+        li.appendChild(document.createTextNode(t));
+        ul.appendChild(li);
+      });
+      elResult.appendChild(ul);
+
+      var acts = document.createElement('div');
+      acts.className = 'res-actions';
+      var a = document.createElement('a');
+      a.className = 'btn btn-wa';
+      a.rel = 'noopener';
+      a.href = 'https://wa.me/' + waNum + '?text=' + encodeURIComponent(msg);
+      a.textContent = 'Ergebnis per WhatsApp schicken';
+      acts.appendChild(a);
+      var again = document.createElement('button');
+      again.type = 'button';
+      again.className = 'btn btn-ghost';
+      again.textContent = 'Nochmal ausfüllen';
+      again.addEventListener('click', function () {
+        idx = 0; answers = []; elResult.hidden = true; elStage.hidden = false; render();
+      });
+      acts.appendChild(again);
+      elResult.appendChild(acts);
+
+      var note = document.createElement('p');
+      note.className = 'muted';
+      note.style.marginTop = '20px';
+      note.style.fontSize = '.85rem';
+      note.textContent = 'Das Ergebnis wurde nirgends gespeichert. Erst wenn ihr auf den Button klickt, verlassen die Angaben euer Gerät – dann als Nachricht, die ihr vorher lesen könnt.';
+      elResult.appendChild(note);
+      elResult.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    }
+
+    render();
+  })();
+</script>

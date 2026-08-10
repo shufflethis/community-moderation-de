@@ -1,26 +1,365 @@
 ---
-interface Props { title: string; description: string; canonical?: string; }
-const { title, description, canonical = 'https://community-moderation.de/' } = Astro.props;
+import { SITE, EMAIL, PHONE, PHONE_LABEL, wa } from '../config';
+
+interface Props {
+  title: string;
+  description: string;
+  canonical?: string;
+  /** Auf der Startseite blenden wir den Sticky-CTA erst nach dem Hero ein. */
+  ctaText?: string;
+}
+const { title, description, canonical = SITE + '/', ctaText = 'Hallo famefact, ich habe eine Frage zur Community Moderation.' } = Astro.props;
+const waHref = wa(ctaText);
+const path = Astro.url.pathname;
 ---
 <!doctype html>
 <html lang="de">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
-    <meta property="og:type" content="website" /><meta property="og:title" content={title} /><meta property="og:description" content={description} /><meta property="og:url" content={canonical} />
     <meta name="robots" content="index,follow,max-image-preview:large" />
-    <link rel="icon" href="/images/famefact-logo.webp" />
-    <title>{title}</title>
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="community moderation" />
+    <meta property="og:locale" content="de_DE" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={SITE + '/images/scenes/team-moderation-schicht.webp'} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="theme-color" content="#0B0B0F" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preload" href="/fonts/bricolage-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin />
     <style is:global>
-      @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&display=swap');
-      :root{--ink:#172119;--forest:#0d3528;--lime:#b9db00;--cream:#f7f5ef;--paper:#fffefb;--mist:#e5eadf;--muted:#5c675e;--orange:#ff6d38;--max:1180px}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--cream);color:var(--ink);font-family:'DM Sans',Arial,sans-serif;line-height:1.55}a{color:inherit}.wrap{max-width:var(--max);margin:auto;padding:0 24px}.skip{position:absolute;left:-999px}.skip:focus{left:12px;top:12px;z-index:10;background:#fff;padding:10px}.nav{padding:20px 0;background:rgba(247,245,239,.96);border-bottom:1px solid #dfe4da;position:sticky;top:0;z-index:5}.nav .wrap{display:flex;align-items:center;justify-content:space-between;gap:22px}.brand{display:flex;align-items:center;gap:12px;text-decoration:none;font-weight:700;font-size:1.03rem}.brand img{width:116px;height:auto}.navlinks{display:flex;align-items:center;gap:20px;font-size:.9rem}.navlinks a{text-decoration:none}.button{display:inline-flex;min-height:46px;align-items:center;justify-content:center;padding:11px 18px;border-radius:4px;text-decoration:none;font-weight:700;background:var(--lime);color:#152008;border:1px solid var(--lime);transition:.2s}.button:hover{transform:translateY(-2px);background:#d2f515}.button.dark{background:var(--forest);border-color:var(--forest);color:#fff}.eyebrow{font-size:.76rem;letter-spacing:.11em;text-transform:uppercase;font-weight:700;color:#527161}.display{font-family:'Source Serif 4',Georgia,serif;line-height:.98;letter-spacing:-.035em}.footer{background:var(--forest);color:#ecf0e8;padding:52px 0 28px;margin-top:80px}.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:30px}.footer a{color:inherit}.footer small{display:block;margin-top:45px;border-top:1px solid #3d6053;padding-top:18px;color:#bdd0c5}@media(max-width:760px){.navlinks a:not(.button){display:none}.nav .wrap{padding:0 16px}.wrap{padding:0 18px}.footer-grid{grid-template-columns:1fr}.navlinks{gap:8px}.brand img{width:96px}}
+      /* Fonts werden selbst ausgeliefert — kein Request an ein Google-CDN. */
+      @font-face {
+        font-family: 'Bricolage Grotesque';
+        src: url('/fonts/bricolage-latin.woff2') format('woff2');
+        font-weight: 400 800;
+        font-style: normal;
+        font-display: swap;
+        unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+2000-206F, U+20AC, U+2122, U+2212, U+FEFF, U+FFFD;
+      }
+      @font-face {
+        font-family: 'InterLocal';
+        src: url('/fonts/inter-latin.woff2') format('woff2');
+        font-weight: 400 700;
+        font-style: normal;
+        font-display: swap;
+        unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+2000-206F, U+20AC, U+2122, U+2212, U+FEFF, U+FFFD;
+      }
+
+      :root {
+        --void: #0b0b0f;
+        --surface: #13141c;
+        --surface-2: #191b25;
+        --line: #262838;
+        --ink: #f2f2f7;
+        --muted: #9a9bac;
+        --accent: #6e5bff;
+        --accent-soft: #8c7dff;
+        --accent-dim: rgba(110, 91, 255, 0.14);
+        --signal: #ff4d6d;
+        --signal-dim: rgba(255, 77, 109, 0.13);
+        --max: 1240px;
+        --r: 18px;
+        --sans: 'InterLocal', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
+        --display: 'Bricolage Grotesque', 'InterLocal', Georgia, serif;
+      }
+
+      * { box-sizing: border-box; }
+      html { scroll-behavior: smooth; scroll-padding-top: 90px; -webkit-text-size-adjust: 100%; }
+      body {
+        margin: 0;
+        background: var(--void);
+        color: var(--ink);
+        font-family: var(--sans);
+        font-size: 17px;
+        line-height: 1.62;
+        -webkit-font-smoothing: antialiased;
+        overflow-x: hidden;
+      }
+      /* Feines Korn — nimmt dem Schwarz die Digital-Härte. */
+      body::before {
+        content: '';
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+        opacity: 0.5;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.045'/%3E%3C/svg%3E");
+      }
+      main, header, footer { position: relative; z-index: 1; }
+
+      a { color: inherit; }
+      img { max-width: 100%; height: auto; display: block; }
+      ::selection { background: var(--accent); color: #fff; }
+      :focus-visible { outline: 2px solid var(--accent-soft); outline-offset: 3px; border-radius: 4px; }
+
+      .wrap { max-width: var(--max); margin: 0 auto; padding: 0 26px; }
+      .narrow { max-width: 830px; }
+
+      h1, h2, h3, .display {
+        font-family: var(--display);
+        font-weight: 700;
+        line-height: 1.02;
+        letter-spacing: -0.035em;
+        margin: 0;
+        text-wrap: balance;
+      }
+      h1 { font-size: clamp(2.9rem, 7.2vw, 6.2rem); }
+      h2 { font-size: clamp(2.15rem, 4.6vw, 3.9rem); }
+      h3 { font-size: clamp(1.28rem, 2vw, 1.65rem); letter-spacing: -0.025em; line-height: 1.15; }
+      p { margin: 0 0 1.15em; }
+      p:last-child { margin-bottom: 0; }
+
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 9px;
+        font-size: 0.73rem;
+        font-weight: 600;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: var(--accent-soft);
+        margin: 0 0 20px;
+      }
+      .eyebrow::before {
+        content: '';
+        width: 7px; height: 7px;
+        border-radius: 50%;
+        background: var(--accent);
+        box-shadow: 0 0 0 4px var(--accent-dim);
+      }
+      .eyebrow.alert { color: var(--signal); }
+      .eyebrow.alert::before { background: var(--signal); box-shadow: 0 0 0 4px var(--signal-dim); }
+
+      .lead { font-size: clamp(1.08rem, 1.6vw, 1.32rem); color: var(--muted); }
+      .muted { color: var(--muted); }
+
+      section { padding: clamp(72px, 9vw, 132px) 0; }
+      .rule { border: 0; border-top: 1px solid var(--line); margin: 0; }
+
+      /* Buttons */
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        min-height: 52px;
+        padding: 13px 26px;
+        border-radius: 100px;
+        border: 1px solid transparent;
+        font: 600 1rem/1 var(--sans);
+        text-decoration: none;
+        cursor: pointer;
+        transition: transform 0.16s ease, background 0.16s ease, border-color 0.16s ease;
+      }
+      .btn:hover { transform: translateY(-2px); }
+      .btn-wa { background: var(--accent); color: #fff; }
+      .btn-wa:hover { background: var(--accent-soft); }
+      .btn-ghost { background: transparent; color: var(--ink); border-color: var(--line); }
+      .btn-ghost:hover { border-color: var(--accent); }
+
+      /* Navigation */
+      .nav {
+        position: sticky;
+        top: 0;
+        z-index: 40;
+        background: rgba(11, 11, 15, 0.82);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        border-bottom: 1px solid var(--line);
+      }
+      .nav .wrap { display: flex; align-items: center; justify-content: space-between; gap: 20px; height: 72px; }
+      .brand { display: flex; align-items: center; gap: 11px; text-decoration: none; }
+      .brand-mark { flex: none; }
+      .brand-word {
+        font-family: var(--display);
+        font-weight: 700;
+        font-size: 1.06rem;
+        letter-spacing: -0.03em;
+        line-height: 1.05;
+      }
+      .brand-word small { display: block; font: 500 0.63rem/1 var(--sans); letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin-top: 4px; }
+      .navlinks { display: flex; align-items: center; gap: 26px; font-size: 0.93rem; }
+      .navlinks a { text-decoration: none; color: var(--muted); transition: color 0.15s; }
+      .navlinks a:hover { color: var(--ink); }
+      .navlinks .btn { min-height: 44px; padding: 10px 20px; font-size: 0.92rem; color: #fff; white-space: nowrap; }
+      .nav-cta .cta-short { display: none; }
+
+      /* Sticky WhatsApp */
+      .fab {
+        position: fixed;
+        right: 20px;
+        bottom: 20px;
+        z-index: 45;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 14px 22px 14px 18px;
+        border-radius: 100px;
+        background: var(--accent);
+        color: #fff;
+        text-decoration: none;
+        font: 600 0.95rem/1 var(--sans);
+        box-shadow: 0 10px 40px rgba(110, 91, 255, 0.42);
+        transition: transform 0.18s ease, opacity 0.25s ease;
+      }
+      .fab:hover { transform: translateY(-3px); }
+
+      /* Karten */
+      .card {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: var(--r);
+        padding: 28px;
+      }
+
+      /* Thread-Bubbles — das Design-Primitiv der Seite */
+      .thread { display: flex; flex-direction: column; gap: 12px; }
+      .bubble {
+        max-width: 100%;
+        padding: 15px 19px;
+        border-radius: 16px;
+        font-size: 0.98rem;
+        line-height: 1.5;
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-bottom-left-radius: 5px;
+      }
+      .bubble .who { display: block; font-size: 0.71rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 7px; }
+      .bubble.mod {
+        align-self: flex-end;
+        background: linear-gradient(180deg, #6e5bff, #5947e0);
+        border-color: transparent;
+        color: #fff;
+        border-bottom-left-radius: 16px;
+        border-bottom-right-radius: 5px;
+      }
+      .bubble.mod .who { color: rgba(255, 255, 255, 0.72); }
+      .bubble.hot { border-color: rgba(255, 77, 109, 0.4); background: var(--signal-dim); }
+
+      /* Footer */
+      /* Untere Reserve, damit der Sticky-CTA keine Footer-Links dauerhaft verdeckt. */
+      .footer { border-top: 1px solid var(--line); padding: 66px 0 96px; background: #08080c; }
+      .footer-grid { display: grid; grid-template-columns: 1.6fr 1fr 1fr 1fr; gap: 34px; }
+      .footer h4 { font: 600 0.74rem/1 var(--sans); letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin: 0 0 16px; }
+      .footer ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; font-size: 0.94rem; }
+      .footer a { color: var(--muted); text-decoration: none; }
+      .footer a:hover { color: var(--ink); }
+      .footer-base { margin-top: 52px; padding-top: 22px; border-top: 1px solid var(--line); display: flex; flex-wrap: wrap; gap: 8px 26px; justify-content: space-between; font-size: 0.84rem; color: var(--muted); }
+
+      .skip { position: absolute; left: -9999px; }
+      .skip:focus { left: 14px; top: 14px; z-index: 60; background: var(--accent); color: #fff; padding: 12px 18px; border-radius: 8px; }
+
+      @media (max-width: 900px) {
+        .footer-grid { grid-template-columns: 1fr 1fr; }
+      }
+      @media (max-width: 760px) {
+        body { font-size: 16px; }
+        .wrap { padding: 0 18px; }
+        .navlinks a:not(.btn) { display: none; }
+        .nav-cta .cta-long { display: none; }
+        .nav-cta .cta-short { display: inline; }
+        .brand-word { font-size: 0.98rem; }
+        .brand-word small { display: none; }
+        .fab { right: 14px; bottom: 14px; padding: 13px 18px; font-size: 0.9rem; }
+        .fab span { display: none; }
+        .card { padding: 22px; }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        html { scroll-behavior: auto; }
+        *, *::before, *::after { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+      }
     </style>
-  </head><body>
+  </head>
+  <body>
     <a class="skip" href="#content">Zum Inhalt springen</a>
-    <header class="nav"><div class="wrap"><a class="brand" href="/"><img src="/images/famefact-logo.webp" alt="famefact" /> <span>Community Moderation</span></a><nav class="navlinks" aria-label="Hauptnavigation"><a href="/#leistungen">Leistungen</a><a href="/#cases">Cases</a><a href="/#ablauf">Ablauf</a><a href="/community-management-agentur/">Agentur</a><a class="button" href="#kontakt">Erstberatung</a></nav></div></header>
+
+    <header class="nav">
+      <div class="wrap">
+        <a class="brand" href="/" aria-label="community moderation — Startseite">
+          <svg class="brand-mark" width="34" height="34" viewBox="0 0 34 34" fill="none" aria-hidden="true">
+            <path d="M11 4h17a4 4 0 0 1 4 4v9a4 4 0 0 1-4 4h-6l-5 4v-4h-6a4 4 0 0 1-4-4V8a4 4 0 0 1 4-4Z" fill="#FF4D6D" opacity=".85"/>
+            <path d="M6 11h16a4 4 0 0 1 4 4v8a4 4 0 0 1-4 4h-7l-6 4.5V27H6a4 4 0 0 1-4-4v-8a4 4 0 0 1 4-4Z" fill="#6E5BFF"/>
+            <circle cx="8.5" cy="19" r="1.7" fill="#fff"/><circle cx="14" cy="19" r="1.7" fill="#fff"/><circle cx="19.5" cy="19" r="1.7" fill="#fff"/>
+          </svg>
+          <span class="brand-word">community moderation<small>ein Service von famefact</small></span>
+        </a>
+        <nav class="navlinks" aria-label="Hauptnavigation">
+          <a href="/#leistungen" aria-current={path === '/' ? 'page' : undefined}>Leistungen</a>
+          <a href="/#recht">Recht</a>
+          <a href="/#check">Selbst-Check</a>
+          <a href="/#kosten">Kosten</a>
+          <a class="btn btn-wa nav-cta" href={waHref} rel="noopener"><span class="cta-long">Per WhatsApp fragen</span><span class="cta-short">WhatsApp</span></a>
+        </nav>
+      </div>
+    </header>
+
     <main id="content"><slot /></main>
-    <footer class="footer"><div class="wrap footer-grid"><div><img src="/images/famefact-logo.webp" alt="famefact" width="120" /><p>Community Moderation von famefact: für Marken, deren Gespräche schneller wachsen als ihr interner Support.</p></div><div><strong>Leistungen</strong><p><a href="/community-management-agentur/">Community Management</a><br/><a href="/social-media-moderation/">Social Media Moderation</a><br/><a href="/krisenkommunikation-social-media/">Krisenkommunikation</a></p></div><div><strong>Kontakt</strong><p><a href="tel:+4930403665430">030 403 665 430</a><br/><a href="mailto:info@famefact.com">info@famefact.com</a><br/><a href="https://famefact.com/impressum/">Impressum & Datenschutz</a></p></div><small>community-moderation.de wird von famefact betrieben. Berlin · deutschlandweit</small></div></footer>
+
+    <footer class="footer">
+      <div class="wrap">
+        <div class="footer-grid">
+          <div>
+            <a class="brand" href="/" style="margin-bottom:16px">
+              <svg width="30" height="30" viewBox="0 0 34 34" fill="none" aria-hidden="true">
+                <path d="M11 4h17a4 4 0 0 1 4 4v9a4 4 0 0 1-4 4h-6l-5 4v-4h-6a4 4 0 0 1-4-4V8a4 4 0 0 1 4-4Z" fill="#FF4D6D" opacity=".85"/>
+                <path d="M6 11h16a4 4 0 0 1 4 4v8a4 4 0 0 1-4 4h-7l-6 4.5V27H6a4 4 0 0 1-4-4v-8a4 4 0 0 1 4-4Z" fill="#6E5BFF"/>
+              </svg>
+              <span class="brand-word">community moderation</span>
+            </a>
+            <p class="muted" style="font-size:.94rem;max-width:38ch">
+              Ausgelagerte Community Moderation für Marken, deren Kommentarspalte schneller wächst
+              als das eigene Team. Betrieben von famefact aus Berlin, seit 2009 im Social Web.
+            </p>
+          </div>
+          <div>
+            <h4>Themen</h4>
+            <ul>
+              <li><a href="/#leistungen">Leistungen</a></li>
+              <li><a href="/#kanaele">Kanäle</a></li>
+              <li><a href="/#recht">DSA &amp; NetzDG</a></li>
+              <li><a href="/#kosten">Kosten</a></li>
+              <li><a href="/#faq">FAQ</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4>Seiten</h4>
+            <ul>
+              <li><a href="/community-management-agentur/">Community Management</a></li>
+              <li><a href="/social-media-moderation/">Social Media Moderation</a></li>
+              <li><a href="/krisenkommunikation-social-media/">Krisenkommunikation</a></li>
+              <li><a href="https://famefact.com/" rel="noopener">famefact.com</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4>Kontakt</h4>
+            <ul>
+              <li><a href={waHref} rel="noopener">WhatsApp schreiben</a></li>
+              <li><a href={`mailto:${EMAIL}`}>{EMAIL}</a></li>
+              <li><a href={`tel:${PHONE}`}>{PHONE_LABEL}</a></li>
+              <li><a href="/impressum/">Impressum</a></li>
+              <li><a href="/datenschutz/">Datenschutz</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer-base">
+          <span>© {new Date().getFullYear()} track by track GmbH · Schliemannstr. 23 · 10437 Berlin</span>
+          <span>community-moderation.de · Berlin &amp; deutschlandweit</span>
+        </div>
+      </div>
+    </footer>
+
+    <a class="fab" href={waHref} rel="noopener" aria-label="Per WhatsApp Kontakt aufnehmen">
+      <svg width="21" height="21" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.46 1.32 4.96L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.9-4.45 9.9-9.91S17.5 2 12.04 2Zm5.8 14.17c-.24.68-1.42 1.31-1.95 1.36-.5.05-.98.23-3.3-.69-2.77-1.09-4.53-3.92-4.67-4.1-.14-.19-1.12-1.49-1.12-2.84 0-1.35.71-2.01.96-2.29.25-.27.55-.34.73-.34.18 0 .37 0 .53.01.17.01.4-.06.62.48.24.57.8 1.97.87 2.11.07.14.12.31.02.5-.09.19-.14.31-.28.47-.14.16-.3.36-.42.48-.14.14-.29.29-.12.57.16.28.73 1.2 1.56 1.94 1.07.96 1.98 1.25 2.26 1.39.28.14.44.12.61-.07.16-.19.7-.81.88-1.09.19-.28.37-.23.62-.14.25.09 1.6.75 1.87.89.28.14.46.21.53.32.07.12.07.66-.17 1.34Z"/>
+      </svg>
+      <span>Per WhatsApp fragen</span>
+    </a>
   </body>
 </html>

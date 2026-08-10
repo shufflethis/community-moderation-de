@@ -1,6 +1,78 @@
 ---
-import BaseLayout from '../../layouts/BaseLayout.astro';
+import SubLayout from '../../layouts/SubLayout.astro';
 ---
-<BaseLayout title="Social Media Moderation Agentur | famefact" description="Social Media Moderation für Marken in Deutschland: schneller, markengerechter Dialog mit klaren Freigaben und Eskalationswegen.">
-<section class="page"><div class="wrap"><p class="eyebrow">Moderation, die Marke und Menschen zusammenbringt</p><h1 class="display">Social Media Moderation: schnell im Dialog, sicher in der Haltung.</h1><p class="intro">Kommentare, Nachrichten und Fragen sind ein sichtbarer Teil deiner Customer Experience. Wir sorgen dafür, dass sie verlässlich beantwortet werden – mit abgestimmter Tonalität und transparenten Prozessen.</p><a class="button" href="/#kontakt">Kostenlose Erstberatung</a><div class="steps"><div><b>01</b><h2>Vorbereiten</h2><p>Wir klären Themen, Zielgruppen, Verantwortlichkeiten und Freigaben.</p></div><div><b>02</b><h2>Moderieren</h2><p>Wir führen den laufenden Dialog passend zu deiner Marke und dem vereinbarten Servicelevel.</p></div><div><b>03</b><h2>Weiterdenken</h2><p>Wir bündeln wiederkehrende Fragen und auffällige Themen für dein Team.</p></div></div><h2 class="display lower">Ein Kommentar ist selten nur ein Kommentar.</h2><p>Er kann Servicefrage, Kaufimpuls, Kritik oder Chance sein. Gute Moderation erkennt den Unterschied und gibt jeder Situation die passende Reaktion.</p></div></section>
-</BaseLayout><style>.page{padding:90px 0}.page h1{font-size:clamp(3rem,6vw,6rem);max-width:930px;margin:10px 0 25px}.intro{font-size:1.25rem;max-width:700px;color:var(--muted);margin-bottom:30px}.steps{margin:80px 0;border-top:1px solid #cbd4c9}.steps>div{display:grid;grid-template-columns:90px 1fr 1.3fr;gap:20px;border-bottom:1px solid #cbd4c9;padding:24px 0}.steps b{color:#527161}.steps h2{font:600 1.5rem 'Source Serif 4',serif;margin:0}.steps p{margin:0;color:var(--muted)}.lower{font-size:clamp(2.3rem,4vw,4rem);max-width:800px}@media(max-width:700px){.page{padding:60px 0}.steps{margin:50px 0}.steps>div{grid-template-columns:1fr;gap:5px}}</style>
+<SubLayout
+  title="Social Media Moderation: Kommentare & DMs auslagern | famefact"
+  description="Social Media Moderation für Instagram, Facebook, TikTok, YouTube und LinkedIn: Kommentare und Direktnachrichten beantworten, Netiquette durchsetzen, Eskalationen dokumentieren."
+  slug="social-media-moderation"
+  eyebrow="Teilbereich der Community Moderation"
+  heading="Social Media Moderation"
+  lead="Der Teil der Community Moderation, der auf den großen Plattformen stattfindet: Kommentare unter organischen Beiträgen und Anzeigen, Direktnachrichten, Bewertungen und Erwähnungen – jeden Tag, im vereinbarten Zeitfenster."
+  image="/images/scenes/moderatoren-am-kanal.webp"
+  imageAlt="Zwei Personen moderieren gemeinsam die Kommentare eines Social-Media-Kanals am Laptop"
+  waText="Hallo famefact, wir suchen Unterstützung bei der Social Media Moderation. Unsere Kanäle: "
+>
+  <h2>Anzeigenkommentare sind der blinde Fleck</h2>
+  <p>
+    In fast jedem Setup, das wir übernehmen, liegt der größte unbearbeitete Bestand nicht unter den
+    organischen Beiträgen, sondern unter den <strong>Anzeigen</strong>. Das hat einen einfachen
+    Grund: Organische Beiträge tauchen im eigenen Feed auf und werden dadurch gesehen, Anzeigen
+    laufen im Werbekonto und werden dort selten auf Kommentare geprüft.
+  </p>
+  <p>
+    Das ist teuer, denn Anzeigen erreichen genau die Menschen, die euch noch nicht kennen. Wer dort
+    auf eine unbeantwortete Frage stößt oder auf einen unwidersprochenen Vorwurf im
+    Kommentarbereich, bildet sich sein Urteil ohne euch. Wir moderieren Anzeigenkommentare deshalb
+    grundsätzlich mit – und melden zurück, welche Anzeigen auffällig viel Kritik erzeugen. Das ist
+    oft die schnellste Optimierung, die ein Performance-Team bekommen kann.
+  </p>
+
+  <h2>Was wir konkret übernehmen</h2>
+  <div class="tiles">
+    <div><b>Kommentare</b><p>Unter organischen Beiträgen, Reels, Shorts und Anzeigen – inklusive der Antworten auf Antworten, die oft die eigentliche Diskussion tragen.</p></div>
+    <div><b>Direktnachrichten</b><p>Postfächer auf Instagram, Facebook und LinkedIn, inklusive Weiterleitung der Fälle, die in euer Vorgangssystem gehören.</p></div>
+    <div><b>Erwähnungen</b><p>Markierungen in Stories und Beiträgen, geteilte Inhalte und Bewertungen, soweit die Plattform sie zugänglich macht.</p></div>
+  </div>
+
+  <h2>Reaktionszeit ist eine Entscheidung, kein Zufall</h2>
+  <p>
+    „So schnell wie möglich“ ist keine Zusage, sondern eine Absichtserklärung. Wir vereinbaren
+    stattdessen konkrete Fenster pro Kanal, weil die Erwartungshaltung sich stark unterscheidet:
+    Unter einem viralen TikTok-Video sind vier Stunden eine Ewigkeit, unter einem
+    LinkedIn-Fachbeitrag sind sie völlig unauffällig.
+  </p>
+  <ul>
+    <li>Standardfälle innerhalb des vereinbarten Fensters, meist zwei bis vier Stunden</li>
+    <li>Kritische Fälle mit deutlich kürzerer Schwelle und sofortiger interner Meldung</li>
+    <li>Fachfragen mit Zwischenantwort innerhalb der Frist und abschließender Antwort nach Klärung</li>
+  </ul>
+  <p>
+    Die Zwischenantwort ist dabei unterschätzt. „Wir schauen uns das an und melden uns morgen“ ist
+    für die Person, die gefragt hat, deutlich besser als drei Tage Schweigen gefolgt von einer
+    perfekten Antwort – und sie hält die Diskussion darunter ruhig.
+  </p>
+
+  <h2>Tonalität ohne Textbausteinverdacht</h2>
+  <p>
+    Eine Antwortbibliothek beschleunigt die Arbeit erheblich, aber sie darf nicht als solche
+    erkennbar sein. Wir arbeiten deshalb mit Bausteinen für den <em>Inhalt</em> und formulieren die
+    Antwort jedes Mal neu. Wer unter drei Kommentaren dieselbe Formulierung liest, hat das Gefühl,
+    mit einem Automaten zu sprechen – und genau dieses Gefühl macht aus einer sachlichen Kritik
+    einen Konflikt.
+  </p>
+  <p>
+    Für heikle Themen – Preise, Lieferzeiten, Nachhaltigkeit, Personalthemen, politische Bezüge –
+    legen wir vorab Sprachregelungen fest, inklusive der Fälle, in denen bewusst nicht öffentlich
+    geantwortet, sondern in die Direktnachricht verlagert wird.
+  </p>
+
+  <h2>Wie das mit dem Rest zusammenhängt</h2>
+  <p>
+    Social Media Moderation ist der sichtbare Teil. Damit sie trägt, braucht sie das Regelwerk, die
+    Protokollierung und den Eskalationsweg, die auf der Startseite beschrieben sind. Wird es
+    ernsthaft kritisch, greift die
+    <a href="/krisenkommunikation-social-media/">Krisenkommunikation</a>; geht es um die längere
+    Entwicklung der Community, ist das
+    <a href="/community-management-agentur/">Community Management</a> zuständig.
+  </p>
+</SubLayout>

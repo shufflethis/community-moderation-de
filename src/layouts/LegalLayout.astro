@@ -1,0 +1,37 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import { SITE } from '../config';
+
+interface Props { title: string; description: string; slug: string; heading: string; }
+const { title, description, slug, heading } = Astro.props;
+---
+<BaseLayout title={title} description={description} canonical={`${SITE}/${slug}/`}>
+  <section class="legal">
+    <div class="wrap narrow">
+      <p class="eyebrow">community-moderation.de</p>
+      <h1>{heading}</h1>
+      <div class="legal-body"><slot /></div>
+      <p class="back"><a href="/">← zurück zur Startseite</a></p>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .legal { padding-top: clamp(48px, 6vw, 84px); }
+  .legal h1 { font-size: clamp(2.3rem, 5vw, 3.6rem); margin-bottom: 40px; }
+  .legal-body { color: var(--muted); font-size: 1rem; }
+  .legal-body :global(h2) { font-size: clamp(1.3rem, 2.2vw, 1.7rem); color: var(--ink); margin: 44px 0 14px; }
+  .legal-body :global(h3) { font-size: 1.08rem; color: var(--ink); margin: 28px 0 10px; }
+  .legal-body :global(p) { margin: 0 0 1.05em; }
+  .legal-body :global(ul) { margin: 0 0 1.2em; padding-left: 20px; display: grid; gap: 7px; }
+  .legal-body :global(a) { color: var(--accent-soft); }
+  .legal-body :global(dl) { display: grid; grid-template-columns: 210px minmax(0, 1fr); gap: 10px 24px; margin: 0 0 1.4em; }
+  .legal-body :global(dt) { color: #6b6d80; font-size: 0.86rem; letter-spacing: 0.06em; text-transform: uppercase; padding-top: 3px; }
+  .legal-body :global(dd) { margin: 0; color: var(--ink); }
+  .back { margin-top: 56px; }
+  .back a { color: var(--accent-soft); text-decoration: none; font-weight: 600; }
+  @media (max-width: 640px) {
+    .legal-body :global(dl) { grid-template-columns: 1fr; gap: 2px 0; }
+    .legal-body :global(dd) { margin-bottom: 12px; }
+  }
+</style>
