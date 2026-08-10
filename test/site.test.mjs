@@ -66,11 +66,21 @@ test('Impressum enthält die vollständige Anbieterkennzeichnung', async () => {
   assert.match(source, /MStV/);
 });
 
-test('Datenschutz erklärt WhatsApp und den Selbst-Check', async () => {
+test('Datenschutz erklärt WhatsApp, den Selbst-Check und die Reichweitenmessung', async () => {
   const source = await read('pages/datenschutz/index.astro');
   assert.match(source, /WhatsApp Ireland/);
   assert.match(source, /Selbst-Check/);
   assert.match(source, /Vercel/);
+  assert.match(source, /Plausible/);
+});
+
+test('jedes eingebundene Analytics-Skript ist auch in der Datenschutzerklärung erklärt', async () => {
+  const layout = await read('layouts/BaseLayout.astro');
+  const hosts = [...layout.matchAll(/<script[^>]+src="https:\/\/([^/"]+)/g)].map((m) => m[1]);
+  const privacy = await read('pages/datenschutz/index.astro');
+  for (const host of hosts) {
+    assert.match(privacy, new RegExp(host.replace(/\./g, '\\.')), `${host} wird geladen, steht aber nicht in der Datenschutzerklärung`);
+  }
 });
 
 test('WhatsApp-Nummer ist zentral gepflegt und nur für WhatsApp gesetzt', async () => {

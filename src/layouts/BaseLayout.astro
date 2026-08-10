@@ -276,6 +276,14 @@ const path = Astro.url.pathname;
         *, *::before, *::after { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
       }
     </style>
+
+    <!-- Privacy-friendly analytics by Plausible (selbst gehostet, cookiefrei) -->
+    <link rel="preconnect" href="https://analytics.polymarkt.de" />
+    <script is:inline async src="https://analytics.polymarkt.de/js/pa-XJ2SuuCstu5O_ASfeJq5n.js"></script>
+    <script is:inline>
+      window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
+      plausible.init()
+    </script>
   </head>
   <body>
     <a class="skip" href="#content">Zum Inhalt springen</a>

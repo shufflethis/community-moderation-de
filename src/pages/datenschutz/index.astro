@@ -4,16 +4,18 @@ import { EMAIL, PHONE, PHONE_LABEL, COMPANY } from '../../config';
 ---
 <LegalLayout
   title="Datenschutzerklärung | community-moderation.de"
-  description="Datenschutzerklärung für community-moderation.de: keine Cookies, kein Tracking, selbst gehostete Schriften. Informationen zu Hosting, WhatsApp-Kontakt und euren Rechten."
+  description="Datenschutzerklärung für community-moderation.de: keine Cookies, cookiefreie Reichweitenmessung mit selbst gehostetem Plausible, selbst gehostete Schriften. Infos zu Hosting, WhatsApp-Kontakt und euren Rechten."
   slug="datenschutz"
   heading="Datenschutz"
 >
   <p>
-    Diese Website ist bewusst schlank gebaut: Sie setzt <strong>keine Cookies</strong>, bindet
-    <strong>kein Analyse- oder Tracking-Werkzeug</strong> ein und lädt <strong>keine Schriften,
-    Karten oder Videos von externen Servern</strong>. Alle Dateien werden von unserer eigenen Domain
-    ausgeliefert. Es gibt daher auf dieser Seite auch kein Einwilligungsbanner, weil es nichts gäbe,
-    worin ihr einwilligen müsstet.
+    Diese Website ist bewusst schlank gebaut: Sie setzt <strong>keine Cookies</strong>, erstellt
+    <strong>keine Nutzerprofile</strong>, verfolgt euch <strong>nicht über andere Websites hinweg</strong>
+    und gibt nichts an Werbenetzwerke weiter. Schriften und alle übrigen Dateien werden von unserer
+    eigenen Domain ausgeliefert – es gibt keine Einbindung von Google Fonts, Karten oder Videos
+    Dritter. Zur Reichweitenmessung nutzen wir eine von uns selbst betriebene, cookiefreie
+    Plausible-Instanz (Abschnitt 4). Ein Einwilligungsbanner gibt es deshalb nicht, weil nach
+    unserer Einschätzung nichts eingesetzt wird, das eine Einwilligung erfordern würde.
   </p>
 
   <h2>1. Verantwortliche Stelle</h2>
@@ -49,7 +51,38 @@ import { EMAIL, PHONE, PHONE_LABEL, COMPANY } from '../../config';
     und es wird dabei keine IP-Adresse an Dritte übermittelt.
   </p>
 
-  <h2>4. Selbst-Check auf der Startseite</h2>
+  <h2>4. Reichweitenmessung mit Plausible</h2>
+  <p>
+    Wir möchten wissen, welche Inhalte gelesen werden. Dafür nutzen wir <strong>Plausible
+    Analytics</strong> – allerdings nicht als Dienst eines Anbieters, sondern als eigene Installation
+    auf einem von uns betriebenen Server unter <code>analytics.polymarkt.de</code>. Der Server steht
+    bei der Hetzner Online GmbH in Deutschland. Es werden dabei <strong>keine Daten an Dritte und
+    keine Daten außerhalb der EU</strong> übermittelt.
+  </p>
+  <p>Plausible arbeitet ohne Cookies und ohne Wiedererkennung einzelner Personen. Erfasst werden:</p>
+  <ul>
+    <li>die aufgerufene Seite dieser Website und die verweisende Seite (Referrer)</li>
+    <li>Browser, Betriebssystem und Gerätetyp in grober Einteilung</li>
+    <li>das Land, abgeleitet aus der IP-Adresse</li>
+    <li>Bildschirmgröße in Kategorien (mobil, Tablet, Desktop)</li>
+  </ul>
+  <p>
+    Die IP-Adresse wird dabei <strong>nicht gespeichert</strong>. Sie fließt ausschließlich in einen
+    täglich wechselnden, gesalzenen Hashwert ein, der es erlaubt, mehrere Seitenaufrufe eines
+    Besuchs als zusammengehörig zu zählen. Nach spätestens 24 Stunden ist auch diese Verknüpfung
+    nicht mehr herstellbar. Es entstehen keine Cookies, keine Einträge im Speicher eures Geräts und
+    kein geräteübergreifendes Profil.
+  </p>
+  <p>
+    Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO; unser berechtigtes Interesse liegt in der
+    statistischen Auswertung der Reichweite, um diese Website zu verbessern. Eine Einwilligung nach
+    § 25 TDDDG halten wir nicht für erforderlich, weil keine Informationen auf eurem Endgerät
+    gespeichert oder aus ihm ausgelesen werden. Ihr könnt dieser Verarbeitung jederzeit nach
+    Art. 21 DSGVO widersprechen – formlos an <a href={`mailto:${EMAIL}`}>{EMAIL}</a>. Gängige
+    Inhaltsblocker unterbinden die Messung ebenfalls vollständig.
+  </p>
+
+  <h2>5. Selbst-Check auf der Startseite</h2>
   <p>
     Der Selbst-Check auf der Startseite läuft vollständig in eurem Browser. Die Antworten werden
     nicht an uns übertragen, nicht in einem Cookie und nicht im lokalen Speicher eures Geräts
@@ -61,7 +94,7 @@ import { EMAIL, PHONE, PHONE_LABEL, COMPANY } from '../../config';
     Der Versand erfolgt dann durch euch selbst über euren WhatsApp-Zugang.
   </p>
 
-  <h2>5. Kontaktaufnahme über WhatsApp</h2>
+  <h2>6. Kontaktaufnahme über WhatsApp</h2>
   <p>
     Auf dieser Website befinden sich Verlinkungen zu WhatsApp (<code>wa.me</code>). Es ist
     <strong>kein WhatsApp-Widget und kein Skript von Meta eingebunden</strong>; solange ihr den
@@ -83,7 +116,7 @@ import { EMAIL, PHONE, PHONE_LABEL, COMPANY } from '../../config';
     besonderen Kategorien personenbezogener Daten nach Art. 9 DSGVO.
   </p>
 
-  <h2>6. Kontakt per E-Mail und Telefon</h2>
+  <h2>7. Kontakt per E-Mail und Telefon</h2>
   <p>
     Wenn ihr uns per E-Mail oder Telefon kontaktiert, verarbeiten wir die von euch mitgeteilten
     Angaben zur Bearbeitung eurer Anfrage. Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO bei
@@ -91,14 +124,14 @@ import { EMAIL, PHONE, PHONE_LABEL, COMPANY } from '../../config';
     der Vorgang abgeschlossen ist und keine gesetzlichen Aufbewahrungspflichten entgegenstehen.
   </p>
 
-  <h2>7. Empfänger</h2>
+  <h2>8. Empfänger</h2>
   <p>
     Eine Weitergabe eurer Daten findet nur statt, soweit sie zur Erfüllung des genannten Zwecks
     erforderlich ist – etwa an unseren Hoster als Auftragsverarbeiter. Eine Weitergabe zu
     Werbezwecken erfolgt nicht.
   </p>
 
-  <h2>8. Eure Rechte</h2>
+  <h2>9. Eure Rechte</h2>
   <p>Ihr habt uns gegenüber jederzeit folgende Rechte in Bezug auf eure personenbezogenen Daten:</p>
   <ul>
     <li>Auskunft über die verarbeiteten Daten (Art. 15 DSGVO)</li>
@@ -115,7 +148,7 @@ import { EMAIL, PHONE, PHONE_LABEL, COMPANY } from '../../config';
     Beauftragte für Datenschutz und Informationsfreiheit.
   </p>
 
-  <h2>9. Änderungen</h2>
+  <h2>10. Änderungen</h2>
   <p>
     Wir passen diese Erklärung an, sobald sich die technische Umsetzung dieser Website oder die
     Rechtslage ändert. Es gilt jeweils die hier veröffentlichte Fassung.

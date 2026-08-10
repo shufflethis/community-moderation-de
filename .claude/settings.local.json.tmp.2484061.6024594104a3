@@ -26,7 +26,26 @@
       "Bash(git --no-pager log --oneline -1 --format='%h %an <%ae> — %s')",
       "Bash(pkill -f \"astro preview --port 4331\")",
       "Bash(pkill -9 -f \"astro preview\")",
-      "Bash(git --no-pager log --oneline -2 --format='%h %an — %s')"
+      "Bash(git --no-pager log --oneline -2 --format='%h %an — %s')",
+      "Bash(git push *)",
+      "Bash(curl -s --max-time 15 -o /dev/null -w \"Start %{http_code}\\\\n\" https://community-moderation.de/)",
+      "Bash(curl -s --max-time 15 https://community-moderation.de/)",
+      "Bash(grep -oE \"<title>[^<]*</title>|<h1[^>]*>[^<]{0,80}\")",
+      "Bash(curl -sI --max-time 15 https://community-moderation.de/)",
+      "Bash(timeout 30 vercel whoami)",
+      "Bash(timeout 40 vercel whoami)",
+      "Bash(grep -vE \"^│|^╭|^╰|^$\")",
+      "Bash(timeout 60 vercel ls community-moderation-de --scope team_qEAR4clr473i64mzqkUeNveQ)",
+      "Bash(curl -s --max-time 20 -o /dev/null -w 'status %{http_code}\\\\n' https://community-moderation-dcna38hnw-trackys-projects-6c71603f.vercel.app/)",
+      "Bash(curl -s --max-time 20 https://community-moderation-dcna38hnw-trackys-projects-6c71603f.vercel.app/)",
+      "Bash(timeout 60 vercel domains ls)",
+      "Bash(dig +short community-moderation.de A)",
+      "Bash(dig +short www.community-moderation.de CNAME)",
+      "Bash(dig +short community-moderation.de NS)",
+      "Bash(curl -s --max-time 20 -o /dev/null -w \"%{redirect_url}\\\\n\" https://community-moderation-dcna38hnw-trackys-projects-6c71603f.vercel.app/)",
+      "Bash(timeout 60 vercel domains inspect community-moderation.de)",
+      "Bash(timeout 60 vercel inspect community-moderation-de)",
+      "Bash(git --no-pager log --oneline -1 --format='%h %an — %s')"
     ]
   },
   "enabledMcpjsonServers": [
