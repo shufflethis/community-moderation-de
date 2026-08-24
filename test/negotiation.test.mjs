@@ -90,6 +90,26 @@ test('nicht unterstützte Typen bekommen 406 statt der falschen Repräsentation'
   assert.notEqual(call('/', 'application/pdf, */*;q=0.1').status, 406, '*/* heißt: HTML ist okay');
 });
 
+test('406 gilt nur für Seiten, nicht für maschinenlesbare Dateien und Endpunkte', () => {
+  // Ein Agent, der die Agent Card mit "Accept: application/json" holt, darf
+  // niemals ein 406 bekommen – das ist der Normalfall, nicht der Sonderfall.
+  for (const path of [
+    '/.well-known/agent-card.json',
+    '/llms.txt',
+    '/llms-full.txt',
+    '/sitemap-index.xml',
+    '/logo.svg',
+    '/a2a/v1',
+    '/api/a2a',
+  ]) {
+    for (const accept of ['application/json', 'text/plain', 'application/pdf']) {
+      const res = call(path, accept);
+      assert.notEqual(res.status, 406, `${path} mit "${accept}" wurde abgelehnt`);
+      assert.notEqual(res.status, 404, `${path} mit "${accept}" wurde als 404 beantwortet`);
+    }
+  }
+});
+
 test('Dateien werden nicht umgeschrieben', () => {
   for (const path of ['/index.md', '/llms.txt', '/sitemap-index.xml', '/logo.svg']) {
     const res = call(path, 'text/markdown');

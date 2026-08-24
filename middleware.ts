@@ -115,17 +115,23 @@ export default function middleware(request: Request): Response {
     });
   }
 
-  // Unbekannter Pfad ohne Dateiendung: Der Agent bekommt seine 404 als Markdown,
-  // statt eine HTML-Seite parsen zu müssen.
-  const looksLikeFile = url.pathname.split('/').pop()?.includes('.');
-  if (wantsMarkdown && !target && !looksLikeFile) {
-    return new Response(markdown404(), {
-      status: 404,
-      headers: { 'Content-Type': 'text/markdown; charset=utf-8', Vary: VARY },
-    });
+  // Alles, was keine Seite ist – llms.txt, agent-card.json, Bilder, /a2a –, geht
+  // uns nichts an. Ein 406 für "Accept: application/json" auf der Agent Card wäre
+  // genau der Fehler, den diese Middleware verhindern soll.
+  if (!target) {
+    const looksLikeFile = url.pathname.split('/').pop()?.includes('.');
+    // Unbekannter Pfad ohne Dateiendung: Der Agent bekommt seine 404 als Markdown,
+    // statt eine HTML-Seite parsen zu müssen.
+    if (wantsMarkdown && !looksLikeFile) {
+      return new Response(markdown404(), {
+        status: 404,
+        headers: { 'Content-Type': 'text/markdown; charset=utf-8', Vary: VARY },
+      });
+    }
+    return next();
   }
 
-  // Weder HTML noch Markdown akzeptiert – etwas anderes haben wir nicht.
+  // Diese Seite gibt es nur als HTML und als Markdown – beides ausgeschlossen.
   if (qHtml === 0 && qMarkdown === 0) {
     return new Response(notAcceptable(), {
       status: 406,
@@ -138,5 +144,5 @@ export default function middleware(request: Request): Response {
 
 export const config = {
   runtime: 'edge',
-  matcher: ['/((?!_astro|images|fonts).*)'],
+  matcher: ['/((?!_astro|images|fonts|api|a2a).*)'],
 };

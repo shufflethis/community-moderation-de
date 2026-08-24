@@ -1,6 +1,10 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "rewrites": [
+    { "source": "/a2a/v1", "destination": "/api/a2a?op=index" },
+    { "source": "/a2a/v1/", "destination": "/api/a2a?op=index" },
+    { "source": "/a2a/v1/:op", "destination": "/api/a2a?op=:op" },
+    { "source": "/a2a/agent-card.json", "destination": "/.well-known/agent-card.json" },
     { "source": "/:alias(about|about-us)", "destination": "/ueber-uns/index.html" },
     { "source": "/:alias(about|about-us)/", "destination": "/ueber-uns/index.html" },
     { "source": "/contact", "destination": "/kontakt/index.html" },

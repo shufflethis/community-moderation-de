@@ -183,9 +183,18 @@ test('die Agent Card ist gültig und zeigt auf einen erreichbaren Endpoint', asy
   assert.match(card.documentationUrl, /llms\.txt$/);
   assert.ok(Array.isArray(card.supportedInterfaces) && card.supportedInterfaces.length >= 1);
   for (const iface of card.supportedInterfaces) {
-    assert.match(iface.url, /^https:\/\//, 'Interface ohne HTTPS-URL');
+    assert.equal(new URL(iface.url).origin, SITE, 'Interface zeigt nicht auf die eigene Domain');
     assert.ok(iface.protocolBinding, 'Interface ohne protocolBinding');
   }
+  assert.equal(card.url, `${SITE}/a2a/v1`);
+
+  const llms = await readDist('llms.txt');
+  assert.ok(llms.includes(`${SITE}/a2a/v1`), 'llms.txt nennt den A2A-Endpunkt nicht');
+
+  const config = JSON.parse(await readFile(new URL('../vercel.json', import.meta.url), 'utf8'));
+  const routed = JSON.stringify(config.rewrites);
+  assert.ok(routed.includes('/a2a/v1'), 'keine Route auf die A2A-Funktion');
+  assert.ok(routed.includes('/api/a2a'), 'A2A-Route zeigt nicht auf die Funktion');
   assert.ok(card.skills.length >= 3, 'zu wenige Skills, um Anfragen zu unterscheiden');
   for (const skill of card.skills) {
     assert.ok(skill.id && skill.name && skill.description, 'Skill unvollständig');

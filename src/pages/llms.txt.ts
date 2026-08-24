@@ -60,7 +60,9 @@ ${ROUTES.map((r) => `- [${r.label}](${link(r.path)}): ${r.summary}`).join('\n')}
 - Every page above is also available as Markdown: request the same URL with \`Accept: text/markdown\`, or append \`index.md\` (for example ${link(markdownPath('/'))}).
 - [llms-full.txt](${link('/llms-full.txt')}): the full text of every page in one Markdown file.
 - [sitemap-index.xml](${link('/sitemap-index.xml')}): all indexable URLs.
-- [agent-card.json](${link('/.well-known/agent-card.json')}): A2A agent card. The message endpoint is operated by famefact at https://famefact.com/a2a/v1 and answers agency-fit and case-matching questions; community moderation requests are routed to the human team.
+- [agent-card.json](${link('/.well-known/agent-card.json')}): A2A agent card.
+- A2A endpoint: \`GET ${link('/a2a/v1')}\` for the service index, \`POST ${link('/a2a/v1/message:send')}\` to send a request (JSON-RPC 2.0 \`message/send\` at the base URL also works). It assesses fit, names the facts still missing and hands over to the human team. Nothing is stored, and it does not moderate — it routes to people who do.
+- Portfolio evidence of the operator: https://famefact.com/a2a/cases.json
 - Unknown paths return HTTP 404 with a Markdown body listing these entry points.
 
 ## Notes

@@ -4,12 +4,12 @@
   "description": "Public A2A discovery agent for hiring human community moderation in German-speaking markets: comment and direct-message moderation for brands, out-of-hours and weekend coverage, netiquette enforcement, DSA/NetzDG-compliant handling of illegal content and community crisis response. Operated by famefact (track by track GmbH), Berlin.",
   "supportedInterfaces": [
     {
-      "url": "https://famefact.com/a2a/v1",
+      "url": "https://community-moderation.de/a2a/v1",
       "protocolBinding": "HTTP+JSON",
       "protocolVersion": "1.0"
     }
   ],
-  "url": "https://famefact.com/a2a/v1",
+  "url": "https://community-moderation.de/a2a/v1",
   "preferredTransport": "HTTP+JSON",
   "provider": {
     "organization": "famefact | track by track GmbH",
