@@ -18,6 +18,20 @@ get()  { curl -sS -m 20 -A "$UA" "$@"; }
 code() { get -o /dev/null -w '%{http_code}' "$@"; }
 ctype(){ get -o /dev/null -w '%{content_type}' "$@"; }
 
+# Kanonische Basis bestimmen: Viele Domains leiten vom Apex auf www um. Ohne
+# diesen Schritt misst man die Weiterleitungsantwort (text/plain, 301) statt der
+# Seite – und bekommt lauter falsche Fehler.
+EFFECTIVE=$(get -o /dev/null -L -w '%{url_effective}' "$BASE/")
+CANON=$(python3 -c "
+import sys
+from urllib.parse import urlparse
+u=urlparse(sys.argv[1] if len(sys.argv)>1 else '')
+print(f'{u.scheme}://{u.netloc}' if u.netloc else '')" "$EFFECTIVE")
+if [ -n "$CANON" ] && [ "$CANON" != "$BASE" ]; then
+  printf '  \033[36mINFO\033[0m Kanonische Basis: %s (geprüft wird diese)\n' "$CANON"
+  BASE="$CANON"
+fi
+
 HOME_HTML=$(get -L "$BASE/")
 
 head_ "1 · Erreichbarkeit"
