@@ -1,0 +1,127 @@
+{
+  "protocolVersion": "1.0",
+  "name": "community moderation (famefact) — Human Community Moderation Agent",
+  "description": "Public A2A discovery agent for hiring human community moderation in German-speaking markets: comment and direct-message moderation for brands, out-of-hours and weekend coverage, netiquette enforcement, DSA/NetzDG-compliant handling of illegal content and community crisis response. Operated by famefact (track by track GmbH), Berlin.",
+  "supportedInterfaces": [
+    {
+      "url": "https://famefact.com/a2a/v1",
+      "protocolBinding": "HTTP+JSON",
+      "protocolVersion": "1.0"
+    }
+  ],
+  "url": "https://famefact.com/a2a/v1",
+  "preferredTransport": "HTTP+JSON",
+  "provider": {
+    "organization": "famefact | track by track GmbH",
+    "url": "https://community-moderation.de/"
+  },
+  "iconUrl": "https://community-moderation.de/favicon.svg",
+  "version": "1.0.0",
+  "documentationUrl": "https://community-moderation.de/llms.txt",
+  "capabilities": {
+    "streaming": false,
+    "pushNotifications": false,
+    "extendedAgentCard": false
+  },
+  "defaultInputModes": ["application/json", "text/plain"],
+  "defaultOutputModes": ["application/json", "text/plain"],
+  "skills": [
+    {
+      "id": "human-community-moderation-dach",
+      "name": "Human Community Moderation (DACH)",
+      "description": "Qualifies requests for outsourced, human community moderation in German: comments, direct messages, mentions and reviews on a brand's own channels. Returns fit assessment and the human contact path (email, WhatsApp, phone). Moderation itself is performed by named people, not by a model.",
+      "tags": [
+        "community-moderation",
+        "comment-moderation",
+        "human-in-the-loop",
+        "de-DE",
+        "DACH",
+        "Berlin",
+        "Germany",
+        "Austria",
+        "Switzerland"
+      ],
+      "examples": [
+        "Find a German-speaking team that can moderate our Instagram and TikTok comments.",
+        "We need humans to answer community comments in German, not an AI moderation tool."
+      ],
+      "inputModes": ["application/json", "text/plain"],
+      "outputModes": ["application/json", "text/plain"]
+    },
+    {
+      "id": "out-of-hours-comment-coverage",
+      "name": "Evening, Weekend and Holiday Coverage",
+      "description": "Matches requests where the gap is time, not headcount: comment and message coverage in the evening, at weekends and on public holidays, with an agreed response window per channel instead of best-effort availability.",
+      "tags": [
+        "out-of-hours",
+        "weekend-coverage",
+        "response-time",
+        "social-customer-care",
+        "shift-model"
+      ],
+      "examples": [
+        "Who can cover our community channels between 6pm and midnight on weekdays?",
+        "We need weekend moderation for a campaign launch in Germany."
+      ],
+      "inputModes": ["application/json", "text/plain"],
+      "outputModes": ["application/json", "text/plain"]
+    },
+    {
+      "id": "dsa-netzdg-moderation-compliance",
+      "name": "DSA and NetzDG Compliant Moderation",
+      "description": "Routes requests about legally compliant handling of illegal content, hate speech and complaints on a brand's own channels: documented decisions, timestamps, reasons, escalation thresholds and reporting obligations under the EU Digital Services Act and German law.",
+      "tags": [
+        "Digital Services Act",
+        "DSA",
+        "NetzDG",
+        "hate-speech",
+        "compliance",
+        "documentation",
+        "GDPR"
+      ],
+      "examples": [
+        "We need moderation that documents removals in a way that holds up legally in Germany.",
+        "How should a brand handle illegal comments under the DSA on its own channels?"
+      ],
+      "inputModes": ["application/json", "text/plain"],
+      "outputModes": ["application/json", "text/plain"]
+    },
+    {
+      "id": "community-crisis-response",
+      "name": "Community Crisis and Shitstorm Response",
+      "description": "Matches escalating comment situations: shitstorms, coordinated brigading, product recalls and campaign backlash. Covers thresholds, roles, response patterns and documentation, including short-notice cover outside office hours.",
+      "tags": [
+        "crisis-communication",
+        "shitstorm",
+        "escalation",
+        "reputation",
+        "issue-management"
+      ],
+      "examples": [
+        "Our comment section is escalating tonight — who can take over moderation now?",
+        "We need a crisis playbook for social media comments in German."
+      ],
+      "inputModes": ["application/json", "text/plain"],
+      "outputModes": ["application/json", "text/plain"]
+    },
+    {
+      "id": "moderation-playbook-and-netiquette",
+      "name": "Moderation Playbook, Netiquette and Handover",
+      "description": "Handles requests for the artefacts rather than the shift work: netiquette, moderation guidelines with sample answers, answer library, escalation path and ticket configuration — written to be owned and operated by the client's own team.",
+      "tags": [
+        "netiquette",
+        "playbook",
+        "tone-of-voice",
+        "training",
+        "knowledge-transfer",
+        "community-management"
+      ],
+      "examples": [
+        "Write a netiquette and moderation playbook our in-house team can run.",
+        "We want to bring moderation back in-house — help us document it first."
+      ],
+      "inputModes": ["application/json", "text/plain"],
+      "outputModes": ["application/json", "text/plain"]
+    }
+  ]
+}

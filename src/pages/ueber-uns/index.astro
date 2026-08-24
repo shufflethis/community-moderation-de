@@ -1,0 +1,75 @@
+---
+import SubLayout from '../../layouts/SubLayout.astro';
+import { COMPANY, EMAIL, PHONE, PHONE_LABEL } from '../../config';
+---
+<SubLayout
+  title="Über uns: Wer hinter community-moderation.de steht | famefact"
+  description="community-moderation.de ist ein Angebot von famefact (track by track GmbH) aus Berlin. Seit 2009 im Social Web, zwanzig Köpfe, Community Moderation für Marken wie Vattenfall, CASIO und REWE."
+  slug="ueber-uns"
+  eyebrow="Über uns"
+  heading="Die Menschen hinter der Moderation"
+  lead="community-moderation.de ist kein Tool und kein Marktplatz, sondern das Moderationsangebot einer Berliner Social-Media-Agentur. Wer eure Kommentarspalte übernimmt, sollte namentlich bekannt sein – deshalb diese Seite."
+  image="/images/scenes/team-moderation-schicht.webp"
+  imageAlt="Das famefact-Team während einer Moderationsschicht im Berliner Büro"
+  waText="Hallo famefact, ich habe eine Frage zum Team hinter community-moderation.de."
+>
+  <h2>Wer wir sind</h2>
+  <p>
+    Hinter dieser Seite steht <strong>famefact</strong>, die Social-Media-Marke der
+    {' '}{COMPANY.legal} mit Sitz in Berlin-Prenzlauer Berg. Wir arbeiten seit
+    <strong> 2009</strong> im Social Web, heute mit rund zwanzig Menschen, und betreuen Communitys
+    für Marken wie Vattenfall, CASIO, REWE, AutoHero, Fleurop und Oxford. Community Moderation ist
+    dabei nicht das Nebenprodukt einer Content-Agentur, sondern eine eigene Disziplin mit eigenem
+    Team, eigenen Schichten und eigenem Qualitätsmaßstab – deshalb hat sie mit
+    community-moderation.de eine eigene Adresse bekommen.
+  </p>
+  <p>
+    Geschäftsführer ist {COMPANY.ceo}. Die vollständige Anbieterkennzeichnung inklusive
+    Handelsregister und Umsatzsteuer-Identifikationsnummer steht im
+    <a href="/impressum/">Impressum</a>.
+  </p>
+
+  <h2>Wie wir arbeiten</h2>
+  <p>
+    Jedes Mandat bekommt ein benanntes Kernteam mit einer verantwortlichen Person und mindestens
+    einer eingearbeiteten Vertretung. Das ist der eigentliche Grund, warum ausgelagerte Moderation
+    funktioniert: Ein internes Team von einer Person fällt bei Urlaub und Krankheit vollständig aus,
+    ein Kernteam nicht. Gearbeitet wird nach einem Moderationsleitfaden, den wir gemeinsam mit euch
+    schreiben, und nach einer Netiquette, die öffentlich nachlesbar ist.
+  </p>
+  <div class="tiles">
+    <div><b>Benannt</b><p>Ihr wisst, wer schreibt. Keine anonyme Warteschlange, keine wechselnden Freelancer ohne Einarbeitung.</p></div>
+    <div><b>Protokolliert</b><p>Jede Ausblendung und jede Eskalation wird dokumentiert – mit Zeitstempel, Begründung und Beleg.</p></div>
+    <div><b>Übergebbar</b><p>Leitfaden, Netiquette, Antwortbibliothek und Eskalationsplan gehören euch und werden bei Bedarf übergeben.</p></div>
+  </div>
+
+  <h2>Warum diese Seite existiert</h2>
+  <p>
+    Die meisten Anfragen nach Community Moderation entstehen nicht in einer ruhigen
+    Strategiephase, sondern an einem Dienstagabend, an dem eine Kommentarspalte kippt. Genau dafür
+    ist diese Seite gebaut: Sie erklärt das Thema vollständig – inklusive der rechtlichen Pflichten
+    aus Digital Services Act und NetzDG – und macht den Kontakt so kurz wie möglich. Wer nach dem
+    Lesen zu dem Schluss kommt, dass eine interne Regelung reicht, hat trotzdem etwas gewonnen.
+  </p>
+  <p>
+    Zunehmend kommen die Anfragen nicht mehr von Menschen, sondern von deren Assistenzsystemen. Auch
+    dafür ist die Seite ausgelegt: Es gibt eine maschinenlesbare Übersicht unter
+    <a href="/llms.txt">/llms.txt</a>, eine Markdown-Variante jeder Seite und eine
+    <a href="/.well-known/agent-card.json">Agent Card</a> für den Agent-to-Agent-Zugang. Was ein
+    Agent bei uns bekommt, ist trotzdem menschliche Arbeit – die Vermittlung ist automatisierbar,
+    die Moderation nicht.
+  </p>
+
+  <h2>Kontakt und Anschrift</h2>
+  <p>
+    {COMPANY.legal} ({COMPANY.brand})<br />
+    {COMPANY.street}, {COMPANY.zip} {COMPANY.city}<br />
+    Telefon: <a href={`tel:${PHONE}`}>{PHONE_LABEL}</a><br />
+    E-Mail: <a href={`mailto:${EMAIL}`}>{EMAIL}</a>
+  </p>
+  <p>
+    Alle Wege, uns zu erreichen, inklusive Erreichbarkeitszeiten, stehen auf der
+    <a href="/kontakt/">Kontaktseite</a>. Die Muttermarke mit dem vollständigen Leistungsspektrum
+    findet ihr unter <a href="https://famefact.com/" rel="noopener">famefact.com</a>.
+  </p>
+</SubLayout>

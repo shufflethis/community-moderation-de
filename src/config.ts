@@ -13,6 +13,19 @@ export const EMAIL = 'info@famefact.com';
 export const PHONE = '+4930403665430';
 export const PHONE_LABEL = '030 403 665 430';
 
+/**
+ * Offizielle Profile der Betreiberin. Dienen als sameAs in JSON-LD und als
+ * Entity-Block in llms.txt — identisch gepflegt wie auf famefact.com, damit
+ * beide Domains dieselbe Identität belegen.
+ */
+export const PROFILES = [
+  'https://famefact.com/',
+  'https://www.linkedin.com/company/1774404/',
+  'https://www.instagram.com/famefact/',
+  'https://www.facebook.com/famefact/',
+  'https://x.com/famefact',
+];
+
 export const COMPANY = {
   legal: 'track by track GmbH',
   brand: 'famefact',

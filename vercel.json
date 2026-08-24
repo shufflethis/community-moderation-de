@@ -1,0 +1,111 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "rewrites": [
+    {
+      "source": "/",
+      "has": [{ "type": "header", "key": "accept", "value": "(.*text/markdown.*)" }],
+      "destination": "/index.md"
+    },
+    {
+      "source": "/:slug(social-media-moderation|community-management-agentur|krisenkommunikation-social-media|ueber-uns|kontakt|impressum|datenschutz)",
+      "has": [{ "type": "header", "key": "accept", "value": "(.*text/markdown.*)" }],
+      "destination": "/:slug/index.md"
+    },
+    {
+      "source": "/:slug(social-media-moderation|community-management-agentur|krisenkommunikation-social-media|ueber-uns|kontakt|impressum|datenschutz)/",
+      "has": [{ "type": "header", "key": "accept", "value": "(.*text/markdown.*)" }],
+      "destination": "/:slug/index.md"
+    },
+
+    {
+      "source": "/:alias(about|about-us)",
+      "has": [{ "type": "header", "key": "accept", "value": "(.*text/markdown.*)" }],
+      "destination": "/ueber-uns/index.md"
+    },
+    {
+      "source": "/:alias(about|about-us)/",
+      "has": [{ "type": "header", "key": "accept", "value": "(.*text/markdown.*)" }],
+      "destination": "/ueber-uns/index.md"
+    },
+    { "source": "/:alias(about|about-us)", "destination": "/ueber-uns/index.html" },
+    { "source": "/:alias(about|about-us)/", "destination": "/ueber-uns/index.html" },
+
+    {
+      "source": "/contact",
+      "has": [{ "type": "header", "key": "accept", "value": "(.*text/markdown.*)" }],
+      "destination": "/kontakt/index.md"
+    },
+    {
+      "source": "/contact/",
+      "has": [{ "type": "header", "key": "accept", "value": "(.*text/markdown.*)" }],
+      "destination": "/kontakt/index.md"
+    },
+    { "source": "/contact", "destination": "/kontakt/index.html" },
+    { "source": "/contact/", "destination": "/kontakt/index.html" },
+
+    {
+      "source": "/:alias(privacy|privacy-policy)",
+      "has": [{ "type": "header", "key": "accept", "value": "(.*text/markdown.*)" }],
+      "destination": "/datenschutz/index.md"
+    },
+    {
+      "source": "/:alias(privacy|privacy-policy)/",
+      "has": [{ "type": "header", "key": "accept", "value": "(.*text/markdown.*)" }],
+      "destination": "/datenschutz/index.md"
+    },
+    { "source": "/:alias(privacy|privacy-policy)", "destination": "/datenschutz/index.html" },
+    { "source": "/:alias(privacy|privacy-policy)/", "destination": "/datenschutz/index.html" },
+
+    {
+      "source": "/:alias(imprint|legal)",
+      "has": [{ "type": "header", "key": "accept", "value": "(.*text/markdown.*)" }],
+      "destination": "/impressum/index.md"
+    },
+    {
+      "source": "/:alias(imprint|legal)/",
+      "has": [{ "type": "header", "key": "accept", "value": "(.*text/markdown.*)" }],
+      "destination": "/impressum/index.md"
+    },
+    { "source": "/:alias(imprint|legal)", "destination": "/impressum/index.html" },
+    { "source": "/:alias(imprint|legal)/", "destination": "/impressum/index.html" }
+  ],
+  "headers": [
+    {
+      "source": "/",
+      "headers": [{ "key": "Vary", "value": "Accept, Accept-Encoding" }]
+    },
+    {
+      "source": "/:slug(social-media-moderation|community-management-agentur|krisenkommunikation-social-media|ueber-uns|kontakt|impressum|datenschutz|about|about-us|contact|privacy|privacy-policy|imprint|legal)",
+      "headers": [{ "key": "Vary", "value": "Accept, Accept-Encoding" }]
+    },
+    {
+      "source": "/:slug(social-media-moderation|community-management-agentur|krisenkommunikation-social-media|ueber-uns|kontakt|impressum|datenschutz|about|about-us|contact|privacy|privacy-policy|imprint|legal)/",
+      "headers": [{ "key": "Vary", "value": "Accept, Accept-Encoding" }]
+    },
+    {
+      "source": "/index.md",
+      "headers": [
+        { "key": "Vary", "value": "Accept, Accept-Encoding" },
+        { "key": "Content-Type", "value": "text/markdown; charset=utf-8" }
+      ]
+    },
+    {
+      "source": "/:slug/index.md",
+      "headers": [
+        { "key": "Vary", "value": "Accept, Accept-Encoding" },
+        { "key": "Content-Type", "value": "text/markdown; charset=utf-8" }
+      ]
+    },
+    {
+      "source": "/:file(llms.txt|llms-full.txt)",
+      "headers": [{ "key": "Content-Type", "value": "text/plain; charset=utf-8" }]
+    },
+    {
+      "source": "/.well-known/agent-card.json",
+      "headers": [
+        { "key": "Content-Type", "value": "application/json; charset=utf-8" },
+        { "key": "Access-Control-Allow-Origin", "value": "*" }
+      ]
+    }
+  ]
+}

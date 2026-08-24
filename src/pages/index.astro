@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { SITE, EMAIL, PHONE, wa, WHATSAPP_NUMBER } from '../config';
+import { SITE, EMAIL, PHONE, COMPANY, PROFILES, wa, WHATSAPP_NUMBER } from '../config';
 
 const faqItems = [
   {
@@ -63,7 +63,7 @@ const faqItems = [
 
 const canonical = SITE + '/';
 
-const orgSchema = {
+const serviceSchema = {
   '@context': 'https://schema.org',
   '@type': 'ProfessionalService',
   '@id': canonical + '#service',
@@ -73,15 +73,33 @@ const orgSchema = {
   email: EMAIL,
   telephone: PHONE,
   image: SITE + '/images/scenes/team-moderation-schicht.webp',
+  logo: SITE + '/logo.svg',
   priceRange: '$$$',
-  areaServed: { '@type': 'Country', name: 'Deutschland' },
+  areaServed: [
+    { '@type': 'Country', name: 'Deutschland' },
+    { '@type': 'Country', name: 'Österreich' },
+    { '@type': 'Country', name: 'Schweiz' },
+  ],
   address: {
     '@type': 'PostalAddress',
-    streetAddress: 'Schliemannstr. 23',
-    postalCode: '10437',
-    addressLocality: 'Berlin',
+    streetAddress: COMPANY.street,
+    postalCode: COMPANY.zip,
+    addressLocality: COMPANY.city,
     addressCountry: 'DE',
   },
+  contactPoint: [
+    {
+      '@type': 'ContactPoint',
+      contactType: 'customer support',
+      telephone: PHONE,
+      email: EMAIL,
+      url: SITE + '/kontakt/',
+      areaServed: ['DE', 'AT', 'CH'],
+      availableLanguage: ['de', 'en'],
+    },
+  ],
+  sameAs: PROFILES,
+  provider: { '@id': SITE + '/#organization' },
   parentOrganization: { '@type': 'Organization', name: 'famefact – track by track GmbH', url: 'https://famefact.com/' },
   serviceType: ['Community Moderation', 'Social Media Moderation', 'Kommentarmoderation', 'Krisenkommunikation'],
   knowsAbout: ['Community Moderation', 'Digital Services Act', 'Hate Speech', 'Netiquette', 'Social Customer Care'],
@@ -104,7 +122,7 @@ const faqSchema = {
   canonical={canonical}
   ctaText="Hallo famefact, wir brauchen Unterstützung bei der Community Moderation. Können wir kurz sprechen?"
 >
-  <script is:inline type="application/ld+json" set:html={JSON.stringify(orgSchema)}></script>
+  <script is:inline type="application/ld+json" set:html={JSON.stringify(serviceSchema)}></script>
   <script is:inline type="application/ld+json" set:html={JSON.stringify(faqSchema)}></script>
 
   <!-- ============ 01 HERO ============ -->

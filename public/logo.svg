@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 34 34" role="img" aria-label="community moderation">
+  <rect width="34" height="34" rx="7" fill="#0B0B0F"/>
+  <path d="M11 4h17a4 4 0 0 1 4 4v9a4 4 0 0 1-4 4h-6l-5 4v-4h-6a4 4 0 0 1-4-4V8a4 4 0 0 1 4-4Z" fill="#FF4D6D" opacity=".85"/>
+  <path d="M6 11h16a4 4 0 0 1 4 4v8a4 4 0 0 1-4 4h-7l-6 4.5V27H6a4 4 0 0 1-4-4v-8a4 4 0 0 1 4-4Z" fill="#6E5BFF"/>
+  <circle cx="8.5" cy="19" r="1.7" fill="#fff"/>
+  <circle cx="14" cy="19" r="1.7" fill="#fff"/>
+  <circle cx="19.5" cy="19" r="1.7" fill="#fff"/>
+</svg>

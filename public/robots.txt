@@ -1,3 +1,10 @@
 User-agent: *
 Allow: /
+
+# Maschinenlesbare Einstiege für Agenten und LLMs
+# llms.txt:        https://community-moderation.de/llms.txt
+# llms-full.txt:   https://community-moderation.de/llms-full.txt
+# Agent Card (A2A): https://community-moderation.de/.well-known/agent-card.json
+# Jede Seite gibt es zusätzlich als Markdown: Accept: text/markdown
+
 Sitemap: https://community-moderation.de/sitemap-index.xml

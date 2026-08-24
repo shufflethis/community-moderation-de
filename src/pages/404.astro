@@ -1,0 +1,95 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE, EMAIL } from '../config';
+import { ROUTES } from '../routes';
+
+/**
+ * Die Seite wird als dist/404.html gebaut und von Vercel mit echtem Status 404
+ * ausgeliefert. Der Markdown-Block darunter ist kein Deko-Element: Agenten, die
+ * hier landen, sollen ohne HTML-Parsing sehen, wo es weitergeht.
+ */
+const recovery = ROUTES.filter((r) => r.priority !== '0.2');
+
+const markdownBody = [
+  '# 404 – Seite nicht gefunden',
+  '',
+  '> Diese URL existiert auf community-moderation.de nicht.',
+  '',
+  '## Einstiege',
+  '',
+  ...recovery.map((r) => `- [${r.label}](${SITE}${r.path}): ${r.summary}`),
+  '',
+  '## Maschinenlesbar',
+  '',
+  `- [llms.txt](${SITE}/llms.txt): Übersicht aller Seiten und Einsatzfälle`,
+  `- [llms-full.txt](${SITE}/llms-full.txt): vollständiger Seiteninhalt als Markdown`,
+  `- [sitemap-index.xml](${SITE}/sitemap-index.xml): alle URLs`,
+  `- [agent-card.json](${SITE}/.well-known/agent-card.json): Agent-to-Agent-Einstieg`,
+  `- Kontakt: ${EMAIL}`,
+].join('\n');
+---
+<BaseLayout
+  title="Seite nicht gefunden (404) | community-moderation.de"
+  description="Diese Seite existiert nicht. Hier stehen die Einstiege in community-moderation.de – Startseite, Leistungen, Kontakt und die maschinenlesbaren Dateien."
+  canonical={SITE + '/'}
+>
+  <section class="nf">
+    <div class="wrap narrow">
+      <p class="eyebrow alert">Fehler 404</p>
+      <h1>Diese Seite gibt es nicht.</h1>
+      <p class="lead" style="margin-top:24px">
+        Der Link ist alt, vertippt oder war nie da. Unten stehen die Einstiege, die es wirklich
+        gibt – und darunter dieselbe Liste als Markdown für Assistenzsysteme.
+      </p>
+
+      <ul class="nf-links">
+        {recovery.map((r) => (
+          <li><a href={r.path}>{r.label}</a><p>{r.summary}</p></li>
+        ))}
+      </ul>
+
+      <div data-markdown-mirror>
+        <h2 class="nf-h2">Maschinenlesbare Einstiege</h2>
+        <pre class="nf-md">{markdownBody}</pre>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .nf { padding-top: clamp(48px, 6vw, 90px); }
+  .nf h1 { font-size: clamp(2.4rem, 5.4vw, 4.2rem); }
+  .nf-links { list-style: none; margin: 42px 0 0; padding: 0; display: grid; gap: 12px; }
+  /* Karte klickbar, Link im Markup aber schlank: Der Titel ist der Link,
+     die Beschreibung bleibt ein eigener Absatz. */
+  .nf-links li {
+    position: relative;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--r);
+    padding: 20px 22px;
+    transition: border-color 0.15s ease;
+  }
+  .nf-links li:hover { border-color: var(--accent); }
+  .nf-links a {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 1.12rem;
+    letter-spacing: -0.02em;
+    text-decoration: none;
+  }
+  .nf-links a::after { content: ''; position: absolute; inset: 0; border-radius: var(--r); }
+  .nf-links p { margin: 6px 0 0; color: var(--muted); font-size: 0.93rem; }
+  .nf-h2 { font-size: clamp(1.3rem, 2.2vw, 1.7rem); margin: 56px 0 16px; }
+  .nf-md {
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: var(--r);
+    padding: 22px;
+    overflow-x: auto;
+    font: 400 0.86rem/1.65 ui-monospace, SFMono-Regular, Menlo, monospace;
+    color: var(--muted);
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+</style>

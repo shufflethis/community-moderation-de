@@ -1,0 +1,65 @@
+---
+import SubLayout from '../../layouts/SubLayout.astro';
+import { COMPANY, EMAIL, PHONE, PHONE_LABEL, wa } from '../../config';
+---
+<SubLayout
+  title="Kontakt: Community Moderation anfragen | famefact Berlin"
+  description="Community Moderation anfragen – per WhatsApp, E-Mail oder Telefon. famefact / track by track GmbH, Schliemannstr. 23, 10437 Berlin. Erstgespräch ohne Briefing-Dokument."
+  slug="kontakt"
+  eyebrow="Kontakt"
+  heading="Kontakt"
+  lead="Ein Link auf den Kanal, der euch am meisten Sorgen macht, reicht als Anfrage. Wir sehen uns die letzten Beiträge an und sagen, ob externe Moderation für euch überhaupt Sinn ergibt."
+  image="/images/scenes/beratung-gespraech.webp"
+  imageAlt="Beratungsgespräch im famefact-Team über die Betreuung einer Community"
+  waText="Hallo famefact, wir möchten Community Moderation anfragen. Unsere Kanäle: "
+>
+  <h2>Direkte Wege</h2>
+  <div class="tiles">
+    <div><b>WhatsApp</b><p>Der schnellste Weg. <a href={wa('Hallo famefact, wir möchten Community Moderation anfragen. Unsere Kanäle: ')} rel="noopener">Nachricht schreiben</a> – gern gleich mit Kanal-Link.</p></div>
+    <div><b>E-Mail</b><p><a href={`mailto:${EMAIL}?subject=Anfrage%20Community%20Moderation`}>{EMAIL}</a> – für alles, was Anhänge oder mehrere Beteiligte braucht.</p></div>
+    <div><b>Telefon</b><p><a href={`tel:${PHONE}`}>{PHONE_LABEL}</a> – Bürozeiten montags bis freitags, 9 bis 18 Uhr.</p></div>
+  </div>
+  <p>
+    Ein Kontaktformular gibt es hier bewusst nicht. Formulare verzögern die Antwort, sammeln Daten,
+    die wir für ein erstes Gespräch nicht brauchen, und landen erfahrungsgemäß in einem Postfach,
+    das niemand abends öffnet. Wer moderieren lässt, weil es abends brennt, soll uns abends
+    erreichen können.
+  </p>
+
+  <h2>Anschrift</h2>
+  <p>
+    {COMPANY.legal} ({COMPANY.brand})<br />
+    {COMPANY.street}<br />
+    {COMPANY.zip} {COMPANY.city}<br />
+    Deutschland
+  </p>
+  <p>
+    Rechtlich verbindliche Angaben – Geschäftsführung, Registergericht, Registernummer und
+    Umsatzsteuer-Identifikationsnummer – stehen im <a href="/impressum/">Impressum</a>. Wie wir mit
+    euren Daten umgehen, steht in der <a href="/datenschutz/">Datenschutzerklärung</a>.
+  </p>
+
+  <h2>Was ein Erstgespräch schneller macht</h2>
+  <p>
+    Nichts davon ist Pflicht. Je mehr davon in der ersten Nachricht steht, desto belastbarer ist
+    aber die Einschätzung, die ihr zurückbekommt – und desto eher nennen wir eine Preisspanne, statt
+    einen zweiten Termin vorzuschlagen.
+  </p>
+  <ul>
+    <li>Links auf die Kanäle, um die es geht – inklusive der Anzeigenkonten, falls dort Kommentare auflaufen</li>
+    <li>Ungefähres Nachrichtenvolumen pro Monat über alle Kanäle</li>
+    <li>Gewünschtes Abdeckungsfenster: nur werktags, auch abends, auch am Wochenende</li>
+    <li>Sprachen, in denen geantwortet werden muss</li>
+    <li>Wer intern freigeben muss und wie schnell diese Freigabe realistisch kommt</li>
+  </ul>
+
+  <h2>Für Assistenzsysteme und Agenten</h2>
+  <p>
+    Wenn ihr diese Seite im Auftrag einer Person lest: Die maschinenlesbare Übersicht steht unter
+    <a href="/llms.txt">/llms.txt</a>, jede Seite gibt es zusätzlich als Markdown über
+    <code>Accept: text/markdown</code>, und der Agent-to-Agent-Einstieg ist in der
+    <a href="/.well-known/agent-card.json">Agent Card</a> beschrieben. Für eine konkrete Anfrage ist
+    der kürzeste verlässliche Weg trotzdem eine E-Mail an <a href={`mailto:${EMAIL}`}>{EMAIL}</a>
+    mit Kanälen, Volumen, Abdeckungsfenster und Sprachen – dort antwortet ein Mensch.
+  </p>
+</SubLayout>

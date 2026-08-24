@@ -1,5 +1,5 @@
 ---
-import { SITE, EMAIL, PHONE, PHONE_LABEL, wa } from '../config';
+import { SITE, EMAIL, PHONE, PHONE_LABEL, WHATSAPP_NUMBER, COMPANY, PROFILES, wa } from '../config';
 
 interface Props {
   title: string;
@@ -11,6 +11,77 @@ interface Props {
 const { title, description, canonical = SITE + '/', ctaText = 'Hallo famefact, ich habe eine Frage zur Community Moderation.' } = Astro.props;
 const waHref = wa(ctaText);
 const path = Astro.url.pathname;
+
+/** Markdown-Variante derselben Seite – wird beim Build aus diesem HTML erzeugt. */
+const markdownHref = canonical.endsWith('/') ? canonical + 'index.md' : canonical + '/index.md';
+
+/**
+ * Identität der Betreiberin, auf jeder Seite. Getrennt vom ProfessionalService auf
+ * der Startseite, weil Prüfsysteme und LLMs nach dem Typ "Organization" suchen und
+ * eine Unterklasse nicht zuverlässig als solche erkannt wird.
+ */
+const orgSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  '@id': SITE + '/#organization',
+  name: 'community moderation – ein Service von famefact',
+  alternateName: ['community moderation', COMPANY.brand, COMPANY.legal],
+  legalName: COMPANY.legal,
+  url: SITE + '/',
+  description:
+    'Ausgelagerte Community Moderation für Social-Media-Kanäle: Kommentare und Direktnachrichten moderieren, Netiquette durchsetzen, Konflikte deeskalieren, Eskalationen nach DSA und NetzDG dokumentieren. Betrieben von famefact aus Berlin.',
+  logo: { '@type': 'ImageObject', url: SITE + '/logo.svg', width: 512, height: 512 },
+  image: SITE + '/images/scenes/team-moderation-schicht.webp',
+  email: EMAIL,
+  telephone: PHONE,
+  foundingDate: '2009',
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: COMPANY.street,
+    postalCode: COMPANY.zip,
+    addressLocality: COMPANY.city,
+    addressRegion: 'Berlin',
+    addressCountry: 'DE',
+  },
+  contactPoint: [
+    {
+      '@type': 'ContactPoint',
+      contactType: 'customer support',
+      telephone: PHONE,
+      email: EMAIL,
+      url: SITE + '/kontakt/',
+      areaServed: ['DE', 'AT', 'CH'],
+      availableLanguage: ['de', 'en'],
+    },
+    {
+      '@type': 'ContactPoint',
+      contactType: 'sales',
+      telephone: `+${WHATSAPP_NUMBER}`,
+      email: EMAIL,
+      url: `https://wa.me/${WHATSAPP_NUMBER}`,
+      areaServed: ['DE', 'AT', 'CH'],
+      availableLanguage: ['de', 'en'],
+    },
+  ],
+  vatID: COMPANY.vat,
+  areaServed: [
+    { '@type': 'Country', name: 'Deutschland' },
+    { '@type': 'Country', name: 'Österreich' },
+    { '@type': 'Country', name: 'Schweiz' },
+  ],
+  sameAs: PROFILES,
+  parentOrganization: { '@type': 'Organization', name: COMPANY.legal, url: PROFILES[0] },
+};
+
+const siteSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  '@id': SITE + '/#website',
+  url: SITE + '/',
+  name: 'community moderation',
+  inLanguage: 'de-DE',
+  publisher: { '@id': SITE + '/#organization' },
+};
 ---
 <!doctype html>
 <html lang="de">
@@ -20,7 +91,11 @@ const path = Astro.url.pathname;
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
+    <link rel="alternate" type="text/markdown" href={markdownHref} title="Markdown-Variante dieser Seite" />
+    <link rel="alternate" type="text/plain" href={SITE + '/llms.txt'} title="llms.txt" />
     <meta name="robots" content="index,follow,max-image-preview:large" />
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(orgSchema)}></script>
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(siteSchema)}></script>
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="community moderation" />
     <meta property="og:locale" content="de_DE" />
@@ -252,6 +327,11 @@ const path = Astro.url.pathname;
       .footer a { color: var(--muted); text-decoration: none; }
       .footer a:hover { color: var(--ink); }
       .footer-base { margin-top: 52px; padding-top: 22px; border-top: 1px solid var(--line); display: flex; flex-wrap: wrap; gap: 8px 26px; justify-content: space-between; font-size: 0.84rem; color: var(--muted); }
+      /* Einstieg für Agenten – bewusst sichtbar, nicht versteckt. */
+      .footer-machine { margin: 14px 0 0; font-size: 0.78rem; color: #6b6d80; }
+      .footer-machine a { color: #6b6d80; text-decoration: underline; text-underline-offset: 3px; }
+      .footer-machine a:hover { color: var(--ink); }
+      .footer-machine code { font-size: 0.95em; color: var(--muted); }
 
       .skip { position: absolute; left: -9999px; }
       .skip:focus { left: 14px; top: 14px; z-index: 60; background: var(--accent); color: #fff; padding: 12px 18px; border-radius: 8px; }
@@ -342,6 +422,8 @@ const path = Astro.url.pathname;
               <li><a href="/community-management-agentur/">Community Management</a></li>
               <li><a href="/social-media-moderation/">Social Media Moderation</a></li>
               <li><a href="/krisenkommunikation-social-media/">Krisenkommunikation</a></li>
+              <li><a href="/ueber-uns/">Über uns</a></li>
+              <li><a href="/kontakt/">Kontakt</a></li>
               <li><a href="https://famefact.com/" rel="noopener">famefact.com</a></li>
             </ul>
           </div>
@@ -360,6 +442,13 @@ const path = Astro.url.pathname;
           <span>© {new Date().getFullYear()} track by track GmbH · Schliemannstr. 23 · 10437 Berlin</span>
           <span>community-moderation.de · Berlin &amp; deutschlandweit</span>
         </div>
+        <p class="footer-machine">
+          Maschinenlesbare Einstiege: <a href="/llms.txt">llms.txt</a> ·
+          <a href="/llms-full.txt">llms-full.txt</a> ·
+          <a href="/sitemap-index.xml">sitemap-index.xml</a> ·
+          <a href="/.well-known/agent-card.json">agent-card.json</a> ·
+          jede Seite auch als Markdown über <code>Accept: text/markdown</code>
+        </p>
       </div>
     </footer>
 
