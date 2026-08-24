@@ -40,17 +40,19 @@ function parseAccept(header: string): AcceptEntry[] {
 
 /**
  * q-Wert für einen Medientyp. Die genauere Angabe gewinnt (RFC 9110):
- * "text/markdown" schlägt "text/*", das wiederum "*​/*" schlägt.
- * Für Markdown lassen wir Wildcards bewusst nicht gelten – "Accept: *​/*" schickt
- * jeder curl-Aufruf und jeder zweite Bot, und die wollen HTML.
+ * "text/html" schlägt "text/*", das wiederum "*​/*" schlägt.
+ *
+ * Mit `exactOnly` zählen Wildcards gar nicht. Genau so wird Markdown gemessen:
+ * "Accept: *​/*" schickt jeder curl-Aufruf und jeder zweite Bot, "Accept: text/*"
+ * meint HTML genauso gut wie Markdown. Markdown gibt es nur, wenn es dasteht.
  */
-function qualityOf(entries: AcceptEntry[], mediaType: string, allowWildcard = true): number {
-  const group = `${mediaType.split('/')[0]}/*`;
+function qualityOf(entries: AcceptEntry[], mediaType: string, exactOnly = false): number {
   const exact = entries.find((e) => e.type === mediaType);
   if (exact) return exact.q;
+  if (exactOnly) return 0;
+  const group = `${mediaType.split('/')[0]}/*`;
   const groupMatch = entries.filter((e) => e.type === group);
   if (groupMatch.length) return Math.max(...groupMatch.map((e) => e.q));
-  if (!allowWildcard) return 0;
   const wildcard = entries.filter((e) => e.type === '*/*');
   return wildcard.length ? Math.max(...wildcard.map((e) => e.q)) : 0;
 }
@@ -103,7 +105,7 @@ export default function middleware(request: Request): Response {
   const path = url.pathname.endsWith('/') ? url.pathname : `${url.pathname}/`;
   const target = MARKDOWN_BY_PATH.get(path);
 
-  const qMarkdown = qualityOf(entries, 'text/markdown', false);
+  const qMarkdown = qualityOf(entries, 'text/markdown', true);
   const qHtml = qualityOf(entries, 'text/html');
   const wantsMarkdown = qMarkdown > 0 && qMarkdown >= qHtml;
 

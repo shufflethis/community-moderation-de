@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import middleware from '../middleware.ts';
+import { ROUTES, ALIASES, markdownPath } from '../src/routes.ts';
 
 /**
  * Verhalten der Inhaltsaushandlung. Läuft gegen die echte Middleware-Funktion,
@@ -21,6 +22,7 @@ test('Browser und Crawler bekommen weiter HTML', async (t) => {
     ['Browser', browser],
     ['curl-Standard', '*/*'],
     ['Bot ohne Präferenz', 'text/html'],
+    ['Gruppen-Wildcard text/*', 'text/*'],
     ['kein Accept-Header', undefined],
   ]) {
     await t.test(name, () => {
@@ -32,14 +34,14 @@ test('Browser und Crawler bekommen weiter HTML', async (t) => {
 });
 
 test('Accept: text/markdown liefert die Markdown-Variante derselben URL', () => {
-  for (const [path, target] of [
-    ['/', '/index.md'],
-    ['/ueber-uns/', '/ueber-uns/index.md'],
-    ['/kontakt', '/kontakt/index.md'],
-    ['/social-media-moderation/', '/social-media-moderation/index.md'],
-    ['/about', '/ueber-uns/index.md'],
-    ['/privacy/', '/datenschutz/index.md'],
-  ]) {
+  // Jede Seite und jeder Alias, direkt aus der Routen-Tabelle – damit eine neue
+  // Seite nicht stillschweigend ohne Markdown-Variante live geht.
+  const cases = [
+    ...ROUTES.map((r) => [r.path, markdownPath(r.path)]),
+    ...ROUTES.filter((r) => r.path !== '/').map((r) => [r.path.slice(0, -1), markdownPath(r.path)]),
+    ...ALIASES.map((a) => [a.from, markdownPath(a.to)]),
+  ];
+  for (const [path, target] of cases) {
     const res = call(path, 'text/markdown');
     assert.equal(new URL(rewriteTarget(res)).pathname, target, `${path} zeigt nicht auf ${target}`);
     assert.match(res.headers.get('vary') ?? '', /Accept/, `${path}: Vary fehlt`);

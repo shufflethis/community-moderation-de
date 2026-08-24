@@ -107,21 +107,16 @@ test('die 404-Seite führt Menschen wie Agenten zurück', async () => {
   }
 });
 
-test('vercel.json handelt Markdown für jede Seite aus und setzt Vary: Accept', async () => {
+test('vercel.json liefert Aliase aus und setzt Vary: Accept', async () => {
   const config = JSON.parse(await readFile(new URL('../vercel.json', import.meta.url), 'utf8'));
   const routes = await readFile(new URL('../src/routes.ts', import.meta.url), 'utf8');
 
-  const slugs = [...routes.matchAll(/path: '\/([^']*)\/'/g)].map((m) => m[1]);
-  const mdRewrites = config.rewrites.filter((r) =>
-    (r.has ?? []).some((h) => h.key === 'accept' && /markdown/.test(h.value)),
+  // Die Aushandlung selbst steckt in middleware.ts (siehe test/negotiation.test.mjs) –
+  // Rewrites greifen erst nach dem Dateisystem und kämen für "/" nie zum Zug.
+  assert.ok(
+    !config.rewrites.some((r) => (r.has ?? []).some((h) => h.key === 'accept')),
+    'Accept-Rewrites hier wären wirkungslos und würden den Mechanismus verschleiern',
   );
-  assert.ok(mdRewrites.length > 0, 'keine Accept-Aushandlung konfiguriert');
-
-  const negotiated = JSON.stringify(mdRewrites);
-  assert.ok(/"source": ?"\/"/.test(negotiated), 'Startseite wird nicht ausgehandelt');
-  for (const slug of slugs) {
-    assert.ok(negotiated.includes(slug), `keine Markdown-Aushandlung für /${slug}/`);
-  }
 
   const aliases = [...routes.matchAll(/aliases: \[([^\]]+)\]/g)]
     .flatMap((m) => m[1].split(','))

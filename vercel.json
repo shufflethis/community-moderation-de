@@ -1,71 +1,13 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "_comment": "Die Accept-Aushandlung steckt in middleware.ts – Rewrites hier greifen erst nach dem Dateisystem und kämen für vorhandene Seiten nie zum Zug. Hier stehen nur fremdsprachige Aliase und Header.",
   "rewrites": [
-    {
-      "source": "/",
-      "has": [{ "type": "header", "key": "accept", "value": "(.*text/markdown.*)" }],
-      "destination": "/index.md"
-    },
-    {
-      "source": "/:slug(social-media-moderation|community-management-agentur|krisenkommunikation-social-media|ueber-uns|kontakt|impressum|datenschutz)",
-      "has": [{ "type": "header", "key": "accept", "value": "(.*text/markdown.*)" }],
-      "destination": "/:slug/index.md"
-    },
-    {
-      "source": "/:slug(social-media-moderation|community-management-agentur|krisenkommunikation-social-media|ueber-uns|kontakt|impressum|datenschutz)/",
-      "has": [{ "type": "header", "key": "accept", "value": "(.*text/markdown.*)" }],
-      "destination": "/:slug/index.md"
-    },
-
-    {
-      "source": "/:alias(about|about-us)",
-      "has": [{ "type": "header", "key": "accept", "value": "(.*text/markdown.*)" }],
-      "destination": "/ueber-uns/index.md"
-    },
-    {
-      "source": "/:alias(about|about-us)/",
-      "has": [{ "type": "header", "key": "accept", "value": "(.*text/markdown.*)" }],
-      "destination": "/ueber-uns/index.md"
-    },
     { "source": "/:alias(about|about-us)", "destination": "/ueber-uns/index.html" },
     { "source": "/:alias(about|about-us)/", "destination": "/ueber-uns/index.html" },
-
-    {
-      "source": "/contact",
-      "has": [{ "type": "header", "key": "accept", "value": "(.*text/markdown.*)" }],
-      "destination": "/kontakt/index.md"
-    },
-    {
-      "source": "/contact/",
-      "has": [{ "type": "header", "key": "accept", "value": "(.*text/markdown.*)" }],
-      "destination": "/kontakt/index.md"
-    },
     { "source": "/contact", "destination": "/kontakt/index.html" },
     { "source": "/contact/", "destination": "/kontakt/index.html" },
-
-    {
-      "source": "/:alias(privacy|privacy-policy)",
-      "has": [{ "type": "header", "key": "accept", "value": "(.*text/markdown.*)" }],
-      "destination": "/datenschutz/index.md"
-    },
-    {
-      "source": "/:alias(privacy|privacy-policy)/",
-      "has": [{ "type": "header", "key": "accept", "value": "(.*text/markdown.*)" }],
-      "destination": "/datenschutz/index.md"
-    },
     { "source": "/:alias(privacy|privacy-policy)", "destination": "/datenschutz/index.html" },
     { "source": "/:alias(privacy|privacy-policy)/", "destination": "/datenschutz/index.html" },
-
-    {
-      "source": "/:alias(imprint|legal)",
-      "has": [{ "type": "header", "key": "accept", "value": "(.*text/markdown.*)" }],
-      "destination": "/impressum/index.md"
-    },
-    {
-      "source": "/:alias(imprint|legal)/",
-      "has": [{ "type": "header", "key": "accept", "value": "(.*text/markdown.*)" }],
-      "destination": "/impressum/index.md"
-    },
     { "source": "/:alias(imprint|legal)", "destination": "/impressum/index.html" },
     { "source": "/:alias(imprint|legal)/", "destination": "/impressum/index.html" }
   ],
