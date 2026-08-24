@@ -6,7 +6,8 @@
  * Er speichert nichts, verschickt nichts und braucht keine Zugangsdaten – die
  * Vermittlung ist automatisierbar, die Moderation nicht.
  */
-import { SITE, EMAIL, PHONE, PHONE_LABEL, WHATSAPP_NUMBER, wa } from './config';
+// .js-Endung, weil diese Datei in der Vercel-Funktion landet – siehe api/a2a.ts.
+import { SITE, EMAIL, PHONE, PHONE_LABEL, WHATSAPP_NUMBER, wa } from './config.js';
 
 export const A2A_PATH = '/a2a/v1';
 export const AGENT_CARD_PATH = '/.well-known/agent-card.json';

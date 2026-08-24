@@ -10,10 +10,15 @@ import { fileURLToPath } from 'node:url';
  */
 registerHooks({
   resolve(specifier, context, nextResolve) {
-    if (specifier.startsWith('.') && !/\.[a-z]+$/i.test(specifier)) {
-      const candidate = new URL(`${specifier}.ts`, context.parentURL);
-      if (existsSync(fileURLToPath(candidate))) {
-        return { url: candidate.href, shortCircuit: true };
+    if (specifier.startsWith('.')) {
+      // Endungslos (middleware.ts, Vorgabe des Middleware-Bundlers) und
+      // ".js" auf eine .ts-Datei (api/, Vorgabe von @vercel/node).
+      const candidates = /\.[a-z]+$/i.test(specifier)
+        ? [specifier.replace(/\.js$/i, '.ts')]
+        : [`${specifier}.ts`];
+      for (const candidate of candidates) {
+        const url = new URL(candidate, context.parentURL);
+        if (existsSync(fileURLToPath(url))) return { url: url.href, shortCircuit: true };
       }
     }
     return nextResolve(specifier, context);

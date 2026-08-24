@@ -1,5 +1,8 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { handle } from '../src/a2a';
+// Mit .js-Endung: @vercel/node transpiliert diese Datei nur, es bündelt sie nicht.
+// Der Import landet unverändert im Deployment, und Node-ESM verlangt dort eine
+// Endung. TypeScript löst ".js" korrekt auf die .ts-Datei auf.
+import { handle } from '../src/a2a.js';
 
 /**
  * Dünne Anbindung an Vercel. Alles Fachliche steht in src/a2a.ts und ist ohne
