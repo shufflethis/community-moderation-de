@@ -1,6 +1,5 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "_comment": "Die Accept-Aushandlung steckt in middleware.ts – Rewrites hier greifen erst nach dem Dateisystem und kämen für vorhandene Seiten nie zum Zug. Hier stehen nur fremdsprachige Aliase und Header.",
   "rewrites": [
     { "source": "/:alias(about|about-us)", "destination": "/ueber-uns/index.html" },
     { "source": "/:alias(about|about-us)/", "destination": "/ueber-uns/index.html" },
