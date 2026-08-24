@@ -81,7 +81,7 @@ if [ "$LLMS_CODE" = "200" ]; then
   LLMS=$(get "$BASE/llms.txt")
   ok "llms.txt vorhanden"
   head -1 <<<"$LLMS" | grep -q '^# ' && ok "beginnt mit H1" || no "erste Zeile ist keine H1"
-  grep -q '^> ' <<<"$LLMS" && ok "Kurzbeschreibung als Blockquote" || meh "keine Zusammenfassung als > Blockquote"
+  grep -qE '^ {0,3}> ' <<<"$LLMS" && ok "Kurzbeschreibung als Blockquote" || meh "keine Zusammenfassung als > Blockquote"
   grep -qiE 'when to use|wann.*einsetzen|best.?fit' <<<"$LLMS" && ok "When-to-use-Abschnitt" || no "kein When-to-use-Abschnitt"
   LINKS=$(grep -oE 'https?://[^ )>`"]+' <<<"$LLMS" | sed 's/[.,;:`]*$//' | sort -u | head -5)
   # 405 heißt: Der Pfad existiert, verlangt aber POST – bei dokumentierten
@@ -100,45 +100,91 @@ for u in sitemap.xml sitemap-index.xml sitemap_index.xml; do
 done
 [ "$SM" = "1" ] || no "keine Sitemap gefunden"
 ROBOTS=$(get "$BASE/robots.txt")
-grep -qE '^\s*Disallow:\s*/\s*$' <<<"$ROBOTS" && no "robots.txt sperrt die ganze Domain" || ok "robots.txt lässt Crawler durch"
+# Gruppenweise auswerten: Ein "Disallow: /" unter einem einzelnen Bot (etwa
+# Bytespider) ist eine bewusste Entscheidung und kein Fehler. Nur die Gruppen,
+# auf die es ankommt, werden geprüft.
+BLOCKED=$(ROBOTS="$ROBOTS" python3 -c "
+import os, re
+groups, current = {}, []
+for line in os.environ['ROBOTS'].splitlines():
+    line = re.sub(r'#.*', '', line).strip()
+    if not line: continue
+    key, _, value = line.partition(':')
+    key, value = key.strip().lower(), value.strip()
+    if key == 'user-agent':
+        current = [value.lower()]
+        groups.setdefault(value.lower(), [])
+    elif key in ('disallow', 'allow') and current:
+        for agent in current: groups.setdefault(agent, []).append((key, value))
+watch = ['*', 'gptbot', 'claudebot', 'perplexitybot', 'google-extended', 'oai-searchbot']
+print(','.join(a for a in watch if any(k == 'disallow' and v == '/' for k, v in groups.get(a, []))))
+" 2>/dev/null)
+[ -z "$BLOCKED" ] && ok "robots.txt lässt die relevanten Crawler durch" || no "robots.txt sperrt: $BLOCKED"
 grep -qi 'sitemap:' <<<"$ROBOTS" && ok "robots.txt nennt die Sitemap" || meh "robots.txt ohne Sitemap-Zeile"
 [ "$(code "$BASE/.well-known/agent-card.json")" = "200" ] && ok "Agent Card vorhanden" || meh "keine /.well-known/agent-card.json"
 
 head_ "6 · Strukturierte Daten"
 # Über eine Datei statt über Umgebung oder Argument: Große Seiten sprengen sonst
-# das Limit für Argumentlisten.
+# das Limit für Argumentlisten. Python meldet nur Marker – gezählt und gefärbt
+# wird in der Shell, sonst fehlen diese Befunde in der Bilanz.
 TMP_HTML=$(mktemp); printf '%s' "$HOME_HTML" > "$TMP_HTML"; trap 'rm -f "$TMP_HTML"' EXIT
-python3 - "$TMP_HTML" <<'PY'
-import sys,re,json
-html=open(sys.argv[1],encoding='utf-8',errors='replace').read()
-blocks=[]
-for m in re.findall(r'<script[^>]*application/ld\+json[^>]*>([\s\S]*?)</script>', html):
+SCHEMA_OUT=$(python3 - "$TMP_HTML" <<'PYEOF'
+import sys, re, json
+
+html = open(sys.argv[1], encoding='utf-8', errors='replace').read()
+blocks = []
+broken = False
+for raw in re.findall(r'<script[^>]*application/ld\+json[^>]*>([\s\S]*?)</script>', html):
     try:
-        d=json.loads(m)
-        for item in (d if isinstance(d,list) else [d]):
-            # Yoast, RankMath & Co. packen alles in @graph – auffalten, sonst
-            # sieht man nur einen Block ohne @type.
-            blocks.extend(item['@graph'] if isinstance(item,dict) and isinstance(item.get('@graph'),list) else [item])
-    except Exception: print('  \033[31mFAIL\033[0m JSON-LD ist kein gültiges JSON')
-if not blocks: print('  \033[31mFAIL\033[0m kein JSON-LD gefunden'); raise SystemExit
-types=[b.get('@type') for b in blocks]
-print(f"  \033[32mOK\033[0m   JSON-LD vorhanden: {', '.join(str(t) for t in types)}")
-print(f"  \033[32mOK\033[0m   mehrere Schema-Typen" if len(set(map(str,types)))>1 else "  \033[33mWARN\033[0m nur ein Schema-Typ – Breite fehlt")
-def types_of(b):
-    t=b.get('@type') if isinstance(b,dict) else None
-    return t if isinstance(t,list) else ([t] if t else [])
-org=next((b for b in blocks if 'Organization' in types_of(b)), None)
+        data = json.loads(raw)
+    except Exception:
+        broken = True
+        continue
+    for item in (data if isinstance(data, list) else [data]):
+        # Yoast, RankMath & Co. packen alles in @graph – auffalten, sonst sieht
+        # man nur einen Block ohne @type.
+        if isinstance(item, dict) and isinstance(item.get('@graph'), list):
+            blocks.extend(item['@graph'])
+        else:
+            blocks.append(item)
+
+if broken:
+    print('FAIL|JSON-LD ist kein gültiges JSON')
+if not blocks:
+    print('FAIL|kein JSON-LD gefunden')
+    raise SystemExit
+
+def types_of(block):
+    t = block.get('@type') if isinstance(block, dict) else None
+    return t if isinstance(t, list) else ([t] if t else [])
+
+names = [' + '.join(types_of(b)) or '(ohne @type)' for b in blocks]
+print(f"OK|JSON-LD vorhanden: {', '.join(names)}")
+distinct = {n for n in names if n}
+print('OK|mehrere Schema-Typen' if len(distinct) > 1 else 'WARN|nur ein Schema-Typ – Breite fehlt')
+
+org = next((b for b in blocks if 'Organization' in types_of(b)), None)
 if not org:
-    print('  \033[31mFAIL\033[0m kein Block mit @type "Organization" (Unterklassen wie ProfessionalService zählen nicht)')
+    print('FAIL|kein Block mit @type "Organization" (Unterklassen zählen nicht)')
 else:
-    for field in ('url','logo','address','contactPoint','sameAs','description'):
-        v=org.get(field)
-        print(f"  \033[32mOK\033[0m   Organization.{field}" if v else f"  \033[31mFAIL\033[0m Organization.{field} fehlt")
-    cps=org.get('contactPoint')
-    cps=cps if isinstance(cps,list) else ([cps] if cps else [])
-    if cps and all(c.get('contactType') for c in cps): print('  \033[32mOK\033[0m   contactPoint mit contactType')
-    elif cps: print('  \033[31mFAIL\033[0m contactPoint ohne contactType')
-PY
+    for field in ('url', 'logo', 'address', 'contactPoint', 'sameAs', 'description'):
+        print(f"OK|Organization.{field}" if org.get(field) else f"FAIL|Organization.{field} fehlt")
+    points = org.get('contactPoint')
+    points = points if isinstance(points, list) else ([points] if points else [])
+    if points and all(p.get('contactType') for p in points):
+        print('OK|contactPoint mit contactType')
+    elif points:
+        print('FAIL|contactPoint ohne contactType')
+PYEOF
+)
+while IFS='|' read -r level message; do
+  [ -z "$level" ] && continue
+  case "$level" in
+    OK)   ok   "$message" ;;
+    WARN) meh  "$message" ;;
+    *)    no   "$message" ;;
+  esac
+done <<< "$SCHEMA_OUT"
 
 head_ "7 · Vertrauensseiten"
 for p in about ueber-uns about-us contact kontakt privacy datenschutz; do
