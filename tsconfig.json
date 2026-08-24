@@ -1,0 +1,9 @@
+{
+  "extends": "astro/tsconfigs/base",
+  "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "Bundler"
+  },
+  "include": ["src", "scripts", "test", "middleware.ts", ".astro/types.d.ts"],
+  "exclude": ["dist", "node_modules"]
+}
