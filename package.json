@@ -7,7 +7,7 @@
     "dev": "astro dev",
     "build": "astro check && astro build && node scripts/build-markdown.mjs",
     "preview": "astro preview",
-    "test": "node --test"
+    "test": "node --import ./scripts/ts-resolve.mjs --test"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.4",

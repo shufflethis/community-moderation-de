@@ -1,7 +1,7 @@
 import { rewrite, next } from '@vercel/functions';
-// Mit Dateiendung importiert, damit dieselbe Datei sowohl im Vercel-Bundler als
-// auch direkt unter node --test (Typ-Stripping) auflösbar ist.
-import { ROUTES, ALIASES, markdownPath } from './src/routes.ts';
+// Ohne Dateiendung: So und nur so löst der Vercel-Bundler den Import auf.
+// Für node --test schließt scripts/ts-resolve.mjs dieselbe Lücke.
+import { ROUTES, ALIASES, markdownPath } from './src/routes';
 
 /**
  * Inhaltsaushandlung nach acceptmarkdown.com.
