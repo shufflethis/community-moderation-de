@@ -607,16 +607,15 @@ const faqSchema = {
         </div>
       </div>
 
-      <div class="people">
-        <figure><img src="/images/people/lea.webp" width="480" height="480" alt="Lea aus dem famefact-Team, zuständig für Moderation und Community" loading="lazy" decoding="async" /><figcaption><b>Lea</b><span>Moderation &amp; Community</span></figcaption></figure>
+      <div class="people single">
         <figure><img src="/images/people/robert.webp" width="480" height="480" alt="Robert aus dem famefact-Team, Teamleitung der Moderationsschichten" loading="lazy" decoding="async" /><figcaption><b>Robert</b><span>Teamleitung Moderationsschichten</span></figcaption></figure>
-        <figure><img src="/images/people/annie.webp" width="480" height="480" alt="Annie aus dem famefact-Team, zuständig für Tonalität und Antwortbibliothek" loading="lazy" decoding="async" /><figcaption><b>Annie</b><span>Tonalität &amp; Antwortbibliothek</span></figcaption></figure>
-        <figure><img src="/images/people/sascha.webp" width="480" height="480" alt="Sascha aus dem famefact-Team, zuständig für Regelwerk und Eskalation" loading="lazy" decoding="async" /><figcaption><b>Sascha</b><span>Regelwerk &amp; Eskalation</span></figcaption></figure>
       </div>
 
       <div class="scenes">
-        <figure class="figure"><img src="/images/scenes/moderatoren-am-kanal.webp" width="1400" height="933" alt="Zwei Moderatorinnen und Moderatoren sichten gemeinsam einen Social-Media-Kanal am Laptop" loading="lazy" decoding="async" /><figcaption>Zwei Augenpaare auf einem strittigen Fall – bevor die Antwort rausgeht.</figcaption></figure>
+        <figure class="figure"><img src="/images/scenes/abstimmung-am-schreibtisch.webp" width="1400" height="933" alt="Zwei Personen stimmen sich am Schreibtisch über einen Kommentar ab, daneben laufen die Kanäle auf zwei Laptops" loading="lazy" decoding="async" /><figcaption>Zwei Augenpaare auf einem strittigen Fall – bevor die Antwort rausgeht.</figcaption></figure>
         <figure class="figure"><img src="/images/scenes/kommentar-am-smartphone.webp" width="1400" height="933" alt="Moderator prüft einen Kommentar am Smartphone neben dem geöffneten Laptop" loading="lazy" decoding="async" /><figcaption>Der Großteil eurer Community schreibt mobil. Wir lesen deshalb auch mobil gegen.</figcaption></figure>
+        <figure class="figure"><img src="/images/scenes/team-am-kanal.webp" width="1400" height="933" alt="Drei Personen aus dem famefact-Team sehen sich gemeinsam einen Social-Media-Kanal auf dem Laptop an" loading="lazy" decoding="async" /><figcaption>Ein Kernteam mit eingearbeiteter Vertretung – damit Urlaub und Krankheit die Moderation nicht stilllegen.</figcaption></figure>
+        <figure class="figure"><img src="/images/scenes/auswertung-am-tisch.webp" width="1400" height="933" alt="Ausgedruckte Auswertung auf dem Besprechungstisch, zwei Personen gehen die Kurve gemeinsam durch" loading="lazy" decoding="async" /><figcaption>Alle vier Wochen gehen wir gemeinsam durch, was aufgefallen ist – und passen Leitfaden und Schwellen an.</figcaption></figure>
       </div>
     </div>
   </section>
@@ -936,6 +935,11 @@ const faqSchema = {
   .people figcaption { margin-top: 13px; }
   .people b { display: block; font-family: var(--display); font-size: 1.16rem; letter-spacing: -0.02em; }
   .people span { font-size: 0.85rem; color: var(--muted); }
+  /* Eine einzelne benannte Person ist kein Raster, sondern eine Ansprechpartner-Zeile. */
+  .people.single { display: flex; align-items: center; gap: 24px; }
+  .people.single figure { display: flex; align-items: center; gap: 24px; }
+  .people.single img { width: 132px; height: 132px; object-fit: cover; flex: none; }
+  .people.single figcaption { margin-top: 0; }
   .scenes { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin-top: 44px; }
 
   /* ---------- Recht ---------- */
